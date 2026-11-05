@@ -24,7 +24,8 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
     ph: (month.lot?.ph as '1' | '2' | 'live') ?? '1',
     o: month.lot?.o ?? '10',
     pt: (month.lot?.pt as '1' | '2' | 'i') ?? '2',
-    dc: (month.lot?.dc as '7' | '5' | '4') ?? '7'
+    dc: (month.lot?.dc as '7' | '5' | '4') ?? '7',
+    dp: (month.lot?.dp as '0.25' | '0.5') ?? '0.5'
   };
 
   const startingBalanceNum = num(month.s) || 0;
@@ -535,25 +536,52 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
 
             {/* Instant Profitable Days Requirement */}
             {lot.pt === 'i' && (
-              <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60">
-                <label className="text-[11.5px] font-semibold text-slate-300 block mb-1.5">
-                  লাভের দিনের টার্গেট (দিনের ব্যালেন্সের ০.৫% লাভ হলে দিন গোনা হবে)
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['7', '5', '4'].map(dayCount => (
-                    <button
-                      key={dayCount}
-                      type="button"
-                      onClick={() => updateLot({ dc: dayCount as any })}
-                      className={`py-1 px-2 text-xs font-bold rounded-lg border transition-all ${
-                        lot.dc === dayCount
-                          ? 'bg-indigo-600 text-white border-indigo-400'
-                          : 'bg-slate-800 text-slate-300 border-slate-700'
-                      }`}
-                    >
-                      {dayCount} দিন
-                    </button>
-                  ))}
+              <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 space-y-2">
+                <div>
+                  <label className="text-[11.5px] font-semibold text-slate-300 block mb-1.5">
+                    ডেলি টার্গেট রেট (% অফ ব্যালেন্স)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { key: '0.25', label: '০.২৫%' },
+                      { key: '0.5', label: '০.৫%' }
+                    ].map(opt => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => updateLot({ dp: opt.key as any })}
+                        className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all ${
+                          (lot.dp || '0.5') === opt.key
+                            ? 'bg-sky-600 text-white border-sky-400'
+                            : 'bg-slate-800 text-slate-300 border-slate-700'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11.5px] font-semibold text-slate-300 block mb-1.5">
+                    লাভের দিনের টার্গেট (দিনের ব্যালেন্সের {lot.dp === '0.25' ? '০.২৫%' : '০.৫%'} লাভ হলে দিন গোনা হবে)
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['7', '5', '4'].map(dayCount => (
+                      <button
+                        key={dayCount}
+                        type="button"
+                        onClick={() => updateLot({ dc: dayCount as any })}
+                        className={`py-1 px-2 text-xs font-bold rounded-lg border transition-all ${
+                          lot.dc === dayCount
+                            ? 'bg-indigo-600 text-white border-indigo-400'
+                            : 'bg-slate-800 text-slate-300 border-slate-700'
+                        }`}
+                      >
+                        {dayCount} দিন
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -590,7 +618,18 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                       <b className="text-emerald-400">${money(totalTargetNum)}</b> (5% of balance)
                     </div>
                     <div className="text-slate-300">
-                      Daily target <b>${money(totalTargetNum / 20)}</b> (20 দিনে)
+                      Daily target{' '}
+                      <b>
+                        $
+                        {money(
+                          lot.pt === 'i'
+                            ? startingBalanceNum > 0
+                              ? Math.round(startingBalanceNum * (lot.dp === '0.25' ? 0.0025 : 0.005) * 100) / 100
+                              : num(month.dt) || (lot.dp === '0.25' ? 25 : 50)
+                            : totalTargetNum / 20
+                        )}
+                      </b>{' '}
+                      {lot.pt === 'i' ? `(ব্যালেন্সের ${lot.dp === '0.25' ? '০.২৫%' : '০.৫%'} · ${lot.dc} দিনে)` : '(20 দিনে)'}
                     </div>
                     <div className="text-slate-400 text-[11px]">
                       To keep the funded account safe, do not trade beyond the target and do not raise the daily loss limit.
@@ -617,7 +656,7 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                 {lot.pt === 'i' && (
                   <div className="text-slate-300 pt-1 border-t border-slate-800 text-[11.5px]">
                     লাভের দিন: <b className="text-emerald-400">{profitDaysData.count} / {lot.dc}</b>{' '}
-                    (দিনের ব্যালেন্সের ০.৫% লাভ হলে দিন গোনা হবে) ·{' '}
+                    (দিনের ব্যালেন্সের {lot.dp === '0.25' ? '০.২৫%' : '০.৫%'} লাভ হলে দিন গোনা হবে) ·{' '}
                     {profitDaysData.count >= Number(lot.dc)
                       ? '🎯 টার্গেট পূর্ণ হয়েছে'
                       : `আর ${Number(lot.dc) - profitDaysData.count} দিন বাকি`}
@@ -710,7 +749,7 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
             মান দিন। Gold-এর ক্ষেত্রে এখানে 1 pip = 0.10 price move ধরে নেওয়া হয়েছে।
           </p>
           <p>
-            Prop Firm-এর Phase target, daily target, Instant-এর 5% / 20-day preset এবং 0.5%
+            Prop Firm-এর Phase target, daily target, Instant preset (ব্যালেন্সের ০.৫%) এবং ০.৫%
             profitable-day rule শুধু উদাহরণভিত্তিক preset—প্রতিটি firm-এর নিয়ম আলাদা। নিজের firm's
             dashboard/rulebook-এর সঙ্গে মিলিয়ে নিন।
           </p>

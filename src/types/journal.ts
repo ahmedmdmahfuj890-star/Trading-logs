@@ -29,6 +29,7 @@ export interface LotConfig {
   o: string; // target percent '10', '9', '8', '7', '6'
   pt: '1' | '2' | 'i'; // prop firm type: 1-Step, 2-Step, Instant
   dc: '7' | '5' | '4'; // profitable days target count
+  dp?: '0.25' | '0.5'; // daily target & profitable day percentage
 }
 
 export interface MonthData {

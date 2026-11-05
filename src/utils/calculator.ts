@@ -126,9 +126,11 @@ export function calculateMonthSummary(month: MonthData): CalcSummary {
 }
 
 export function calculateProfitDays(month: MonthData) {
-  let bal = num(month.s) || 0;
+  const startBal = num(month.s) || 0;
+  let bal = startBal;
   let count = 0;
   let totalTradedDays = 0;
+  const dpRate = (month as any).lot?.dp === '0.25' ? 0.0025 : 0.005;
 
   month.d.forEach(day => {
     let sum = 0;
@@ -142,7 +144,12 @@ export function calculateProfitDays(month: MonthData) {
     });
     if (any) {
       totalTradedDays++;
-      if (sum > 0 && sum >= bal * 0.005) {
+      // Instant account: counted as profitable day if net profit reaches at least selected % of balance
+      const isProfitable =
+        sum > 0 &&
+        ((startBal > 0 && sum >= startBal * dpRate) ||
+          (bal > 0 && sum >= bal * dpRate));
+      if (isProfitable) {
         count++;
       }
     }

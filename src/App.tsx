@@ -1847,6 +1847,7 @@ export default function App() {
       let opt = '10';
       let pt = '2';
       let dc = '7';
+      let dp = '0.5';
 
       const startEl = document.getElementById('start') as HTMLInputElement;
       const maxdEl = document.getElementById('maxd') as HTMLInputElement;
@@ -1875,9 +1876,11 @@ export default function App() {
       }
 
       function profitDays() {
-        let bal = num(startEl?.value) || 0;
+        const startBal = num(startEl?.value) || 0;
+        let bal = startBal;
         let n = 0;
         let tot = 0;
+        const rate = dp === '0.25' ? 0.0025 : 0.005;
         S.d.forEach(function (d: any) {
           let sum = 0;
           let any = false;
@@ -1890,7 +1893,12 @@ export default function App() {
           });
           if (any) {
             tot++;
-            if (sum > 0 && sum >= bal * 0.005) n++;
+            // Instant account: day counts if profit is at least selected % (0.25% or 0.5%) of balance
+            const isProfitable =
+              sum > 0 &&
+              ((startBal > 0 && sum >= startBal * rate) ||
+                (bal > 0 && sum >= bal * rate));
+            if (isProfitable) n++;
           }
           bal += sum;
         });
@@ -1916,7 +1924,11 @@ export default function App() {
           return;
         }
         if (ph === 'live') {
-          d = T / (P.d || 20);
+          const b = num(startEl?.value) || 0;
+          const rate = dp === '0.25' ? 0.0025 : 0.005;
+          const instTarget = b > 0 ? Math.round(b * rate * 100) / 100 : (dp === '0.25' ? 25 : 50);
+          d = pt === 'i' ? (num(dtgt?.value) > 0 ? num(dtgt.value) : instTarget) : T / (P.d || 20);
+          const pctLabel = dp === '0.25' ? '০.২৫%' : '০.৫%';
           h +=
             '<div class="lcln"><b>' +
             (pt === 'i' ? 'Instant' : 'Prop Live') +
@@ -1926,9 +1938,9 @@ export default function App() {
           h +=
             '<div class="lcln">Daily target <b>$' +
             money(d) +
-            '</b> (' +
-            P.d +
-            ' দিনে)</div>';
+            '</b> ' +
+            (pt === 'i' ? '(ব্যালেন্সের ' + pctLabel + ' · ' + dc + ' দিনে)' : '(' + (P.d || 20) + ' দিনে)') +
+            '</div>';
           h +=
             '<div class="lcln">To keep the funded account safe, do not trade beyond the target and do not raise the daily loss limit.</div>';
         } else {
@@ -1951,13 +1963,14 @@ export default function App() {
         if (ph === 'live' && pt === 'i') {
           const pdays = profitDays();
           const tg = Number(dc);
+          const pctLabel = dp === '0.25' ? '০.২৫%' : '০.৫%';
           h +=
             '<div class="lcln">লাভের দিন: <b>' +
             pdays.n +
             ' / ' +
             tg +
-            '</b> (দিনের ব্যালেন্সের ০.৫% লাভ হলে দিন গোনা হবে) · ' +
-            (pdays.n >= tg ? 'টার্গেট পূর্ণ হয়েছে' : tg - pdays.n + ' দিন বাকি') +
+            '</b> (দিনের ব্যালেন্সের ' + pctLabel + ' লাভ হলে দিন গোনা হবে) · ' +
+            (pdays.n >= tg ? '🎯 টার্গেট পূর্ণ হয়েছে' : tg - pdays.n + ' দিন বাকি') +
             '</div>';
         }
         if (ml > 0 && d > ml)
@@ -2051,7 +2064,8 @@ export default function App() {
           ph,
           o: opt,
           pt,
-          dc
+          dc,
+          dp
         };
         save();
       }
@@ -2060,6 +2074,16 @@ export default function App() {
         document.querySelectorAll('#dcs button').forEach(function (x: any) {
           x.classList.toggle('on', x.getAttribute('data-dc') === dc);
         });
+        document.querySelectorAll('#idp button').forEach(function (x: any) {
+          x.classList.toggle('on', x.getAttribute('data-dp') === dp);
+        });
+        const dclbl = document.getElementById('dclbl');
+        if (dclbl) {
+          dclbl.textContent =
+            'লাভের দিনের টার্গেট (দিনের ব্যালেন্সের ' +
+            (dp === '0.25' ? '০.২৫%' : '০.৫%') +
+            ' লাভ হলে দিন গোনা হবে)';
+        }
         document.querySelectorAll('#lcpt button').forEach(function (x: any) {
           x.classList.toggle('on', x.getAttribute('data-pt') === pt);
         });
@@ -2154,7 +2178,8 @@ export default function App() {
           const T = Math.round(b * 0.05 * 100) / 100;
           if (mtgt) mtgt.value = String(T);
           S.mt = String(T);
-          const d = Math.round((T / (PLAN.live.d || 20)) * 100) / 100;
+          const rate = dp === '0.25' ? 0.0025 : 0.005;
+          const d = pt === 'i' ? Math.round(b * rate * 100) / 100 : Math.round((T / (PLAN.live.d || 20)) * 100) / 100;
           if (dtgt) dtgt.value = String(d);
           S.dt = String(d);
           setLossFromDaily(d);
@@ -2173,6 +2198,7 @@ export default function App() {
       if (startEl) {
         startEl.addEventListener('input', function () {
           if (acct === 'prop' && ph !== 'live') applyProp();
+          if (acct === 'prop' && ph === 'live' && pt === 'i') autoTarget();
           refreshPick();
         });
       }
@@ -2345,6 +2371,16 @@ export default function App() {
         });
       });
 
+      document.querySelectorAll('#idp button').forEach(function (x: any) {
+        x.addEventListener('click', function () {
+          dp = x.getAttribute('data-dp') || '0.5';
+          markBtns();
+          autoTarget();
+          store();
+          renderLot();
+        });
+      });
+
       (window as any).lcLoad = function () {
         const L = S.lot || {};
         if (E.lct) E.lct.value = L.t || 3;
@@ -2366,6 +2402,7 @@ export default function App() {
         if (pt === '1' && ph === '2') ph = '1';
         if (pt === 'i') ph = 'live';
         dc = /^(7|5|4)$/.test(L.dc) ? L.dc : '7';
+        dp = L.dp === '0.25' ? '0.25' : '0.5';
         markBtns();
         syncLot();
         refreshPick();
@@ -2631,7 +2668,16 @@ export default function App() {
             <button data-m="high">High Risk</button>
           </div>
           <div id="mindw" style={{ display: 'none' }}>
-            <label>লাভের দিনের টার্গেট (দিনের ব্যালেন্সের ০.৫% লাভ হলে দিন গোনা হবে)</label>
+            <label>ডেলি টার্গেট রেট (% অফ ব্যালেন্স)</label>
+            <div
+              id="idp"
+              className="modes"
+              style={{ gridTemplateColumns: '1fr 1fr', margin: '6px 0 10px' }}
+            >
+              <button data-dp="0.25">০.২৫%</button>
+              <button data-dp="0.5">০.৫%</button>
+            </div>
+            <label id="dclbl">লাভের দিনের টার্গেট (দিনের ব্যালেন্সের ০.৫% লাভ হলে দিন গোনা হবে)</label>
             <div
               id="dcs"
               className="modes"
@@ -2650,7 +2696,7 @@ export default function App() {
             মান দিন। Gold-এর ক্ষেত্রে এখানে 1 pip = 0.10 price move ধরে নেওয়া হয়েছে।
           </p>
           <p className="sub" style={{ margin: '8px 0 0' }}>
-            Prop Firm-এর Phase target, daily target, Instant-এর 5% / 20-day preset এবং 0.5%
+            Prop Firm-এর Phase target, daily target, Instant preset (ব্যালেন্সের ০.৫%) এবং ০.৫%
             profitable-day rule শুধু উদাহরণভিত্তিক preset—প্রতিটি firm-এর নিয়ম আলাদা। নিজের firm's
             dashboard/rulebook-এর সঙ্গে মিলিয়ে নিন।
           </p>
