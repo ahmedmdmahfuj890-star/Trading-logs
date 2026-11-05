@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #070b14;
+  --card: rgba(17, 24, 39, 0.75);
+  --in: #0f172a;
+  --tx: #e6ecf5;
+  --mut: #8a97ad;
+  --bd: rgba(148, 163, 184, 0.18);
+  --ink: #1e3a5f;
+  --gn: #34d399;
+  --rd: #f87171;
+  --gnbg: rgba(16, 185, 129, 0.12);
+  --gnbd: rgba(52, 211, 153, 0.35);
+  --rdbg: rgba(239, 68, 68, 0.12);
+  --rdbd: rgba(248, 113, 113, 0.35);
+}
+
+@property --a {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: true;
+}
+
+@keyframes mhspin {
+  to {
+    --a: 360deg;
+  }
+}
+
+@keyframes mhdust {
+  0% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx, 60px), var(--dy, -40px)) rotate(var(--r, 20deg)) scale(0.9);
+    filter: blur(6px);
+  }
+}
+
+@keyframes mhblink {
+  50% {
+    opacity: 0;
+  }
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(900px 500px at 10% -10%, rgba(56, 189, 248, 0.14), transparent 60%),
+              radial-gradient(800px 500px at 110% 10%, rgba(244, 63, 94, 0.11), transparent 60%),
+              #070b14 !important;
+  color: #e6ecf5;
+  font-family: "Plus Jakarta Sans", "Noto Sans Bengali", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Moving border light for cards */
+.neon-glow {
+  position: relative;
+  animation: mhspin 30s linear infinite;
+}
+
+.neon-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 2px;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(0, 207, 255, 0.45));
+  background: conic-gradient(from var(--a), transparent 0 36%, #00cfff 60%, #ffffff 76%, #ff3b5c 90%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-glow {
+    animation: none;
+  }
+  .neon-glow::before {
+    display: none;
+  }
+}
+
+/* Glassmorphism card surfaces */
+.glass-panel {
+  background: rgba(17, 24, 39, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 20px;
+}
+
+/* Custom inputs */
+input, select, textarea {
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 12px;
+  color: #e6ecf5;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b1324;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a3a54;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3b5074;
+}

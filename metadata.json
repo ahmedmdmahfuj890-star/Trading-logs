@@ -1,0 +1,6 @@
+{
+  "name": "Mahfuj Trading Log",
+  "description": "Comprehensive 20-day Forex & Prop Firm trading journal with live market sessions, risk calculator, discipline checklists, and visual analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
