@@ -2667,7 +2667,7 @@ export default function App() {
           </div>
         </div>
 
-        <h2 style={{ margin: '22px 0 12px', gridColumn: '1/-1' }}>🧮 Lot Size Calculator</h2>
+        <h2 style={{ margin: '12px 0 6px', gridColumn: '1/-1', fontSize: '15px' }}>🧮 Lot Size Calculator</h2>
         <div id="lc" style={{ gridColumn: '1/-1' }}>
           <div className="two">
             <div>
@@ -2808,12 +2808,12 @@ export default function App() {
           </div>
           <div id="propbox" style={{ display: 'none' }}></div>
           <div id="lcout"></div>
-          <p className="sub" style={{ margin: '10px 0 0' }}>
+          <p className="sub" style={{ margin: '6px 0 0', fontSize: '11px', lineHeight: '1.4' }}>
             এটি শুধু আনুমানিক হিসাব, ট্রেডিং পরামর্শ নয়। Pip value ব্রোকার, contract size, account
             currency ও instrument অনুযায়ী বদলায়। আগে আপনার ব্রোকারের হিসাব দেখে Pip value ঘরে সঠিক
             মান দিন। Gold-এর ক্ষেত্রে এখানে 1 pip = 0.10 price move ধরে নেওয়া হয়েছে।
           </p>
-          <p className="sub" style={{ margin: '8px 0 0' }}>
+          <p className="sub" style={{ margin: '4px 0 0', fontSize: '11px', lineHeight: '1.4' }}>
             Prop Firm-এর Phase target, daily target, Instant preset (ব্যালেন্সের ০.৫%) এবং ০.৫%
             profitable-day rule শুধু উদাহরণভিত্তিক preset—প্রতিটি firm-এর নিয়ম আলাদা। নিজের firm's
             dashboard/rulebook-এর সঙ্গে মিলিয়ে নিন।

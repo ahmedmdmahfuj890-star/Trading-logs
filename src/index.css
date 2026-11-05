@@ -162,14 +162,25 @@ h1{background:none;color:var(--tx);-webkit-text-fill-color:initial}
 #stats .stat:last-child span{font-size:15px;font-weight:700}
 #stats .stat:last-child b{font-size:40px;letter-spacing:-.02em;margin-top:6px;color:var(--ink)}
 
-/* lot calculator */
-#lcout{margin-top:12px}
-#lcout .lcbig{text-align:center;background:var(--in);border-radius:14px;padding:14px 10px}
-#lcout .lcbig span{display:block;font-size:13px;font-weight:700;color:var(--mut)}
-#lcout .lcbig b{display:block;font-size:44px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1.15}
-#lcout .lcln{font-size:13.5px;margin:8px 2px 0;line-height:1.5}
-#lcout .lcwarn{font-size:13px;font-weight:700;color:var(--rd);margin:10px 2px 0;line-height:1.5}
-#lcout table{margin-top:10px}
+/* lot calculator compact & sleek */
+#lc{margin-top:4px}
+#lc .two{gap:8px}
+#lc label{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:3px}
+#lc input,#lc select{min-height:38px;height:38px;padding:6px 10px;font-size:13px;border-radius:10px}
+#propbox{background:rgba(15,23,42,.7);border:1px solid rgba(56,189,248,.25);border-radius:12px;padding:8px 11px;margin-top:8px}
+#propbox .lcln{font-size:11.5px;margin:3px 0 0;line-height:1.4;color:#cbd5e1}
+#propbox .lcln:first-child{margin-top:0}
+#propbox .lcln b{color:#38bdf8;font-weight:700}
+#propbox .lcwarn{font-size:11.5px;font-weight:700;color:#f87171;margin-top:4px;line-height:1.35}
+#lcout{margin-top:8px}
+#lcout .lcbig{text-align:center;background:linear-gradient(135deg,rgba(15,23,42,.9),rgba(30,41,59,.8));border:1px solid rgba(56,189,248,.25);border-radius:12px;padding:8px 10px}
+#lcout .lcbig span{display:block;font-size:11px;font-weight:700;color:#94a3b8}
+#lcout .lcbig b{display:block;font-size:28px;font-weight:800;letter-spacing:-.02em;color:#38bdf8;line-height:1.15;text-shadow:0 0 16px rgba(56,189,248,.35)}
+#lcout .lcln{font-size:11.5px;margin:3px 0 0;line-height:1.4;color:#cbd5e1}
+#lcout .lcln b{color:#f1f5f9}
+#lcout .lcwarn{font-size:11.5px;font-weight:700;color:#f87171;margin:5px 0 0;line-height:1.35}
+#lcout table{margin-top:6px;font-size:11.5px}
+#lcout th,#lcout td{padding:5px 4px}
 .pickbtn{font:inherit;font-weight:700;font-size:14px;min-height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--tx);cursor:pointer}.pickbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 12px}.modes button{font:inherit;font-weight:700;font-size:13.5px;min-height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--tx);cursor:pointer}.modes button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 
 /* ===== modern theme (final layer) ===== */
@@ -237,7 +248,7 @@ button.reset{background:var(--card);border:1px solid var(--bd);border-radius:16p
 
 /* Accordion Dropdown Styles for Lot Calculator Options */
 .drop-wrap {
-  margin: 10px 0;
+  margin: 5px 0;
   position: relative;
 }
 .drop-trig {
@@ -245,16 +256,16 @@ button.reset{background:var(--card);border:1px solid var(--bd);border-radius:16p
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 12px 20px;
-  min-height: 48px;
-  border-radius: 16px;
+  gap: 5px;
+  padding: 8px 14px;
+  min-height: 38px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #2b7fff 0%, #5664f5 100%);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 16px rgba(43, 127, 255, 0.4), 0 0 16px rgba(86, 100, 245, 0.25);
+  box-shadow: 0 2px 10px rgba(43, 127, 255, 0.35), 0 0 10px rgba(86, 100, 245, 0.2);
   color: #ffffff !important;
   font: inherit;
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -262,21 +273,21 @@ button.reset{background:var(--card);border:1px solid var(--bd);border-radius:16p
 }
 .drop-trig:hover {
   background: linear-gradient(135deg, #3a8cff 0%, #6875f8 100%);
-  box-shadow: 0 6px 20px rgba(43, 127, 255, 0.55), 0 0 22px rgba(86, 100, 245, 0.35);
+  box-shadow: 0 4px 14px rgba(43, 127, 255, 0.45), 0 0 14px rgba(86, 100, 245, 0.25);
   transform: translateY(-1px);
 }
 .drop-trig:active {
   transform: scale(0.985);
 }
 .drop-trig.open {
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4), 0 8px 24px rgba(43, 127, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4), 0 4px 16px rgba(43, 127, 255, 0.4);
 }
 .drop-trig span {
   color: #ffffff !important;
   font-weight: 700;
 }
 .drop-trig .arr {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 800;
   color: #ffffff;
   margin-left: 2px;
@@ -286,20 +297,20 @@ button.reset{background:var(--card);border:1px solid var(--bd);border-radius:16p
   transform: rotate(180deg);
 }
 .drop-body {
-  margin-top: 8px !important;
+  margin-top: 5px !important;
   background: rgba(11, 17, 33, 0.96);
-  padding: 10px;
-  border-radius: 14px;
-  border: 1.5px solid rgba(56, 189, 248, 0.3);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 24px rgba(14, 165, 233, 0.15);
-  animation: fadeInDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  gap: 8px !important;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 16px rgba(14, 165, 233, 0.15);
+  animation: fadeInDown 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 6px !important;
 }
 .drop-body button {
-  min-height: 44px;
-  font-size: 13.5px;
+  min-height: 36px;
+  font-size: 12.5px;
   font-weight: 700;
-  border-radius: 11px;
+  border-radius: 9px;
   border: 1px solid rgba(148, 163, 184, 0.25);
   background: rgba(15, 23, 42, 0.9);
   color: #cbd5e1;
@@ -309,13 +320,13 @@ button.reset{background:var(--card);border:1px solid var(--bd);border-radius:16p
   border-color: rgba(56, 189, 248, 0.6);
   color: #ffffff;
   background: rgba(30, 41, 59, 0.95);
-  box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
 }
 .drop-body button.on {
-  background: linear-gradient(135deg, #0ea5e9, #6366f1) !important;
+  background: linear-gradient(135deg, #2563eb, #6366f1) !important;
   border-color: rgba(255, 255, 255, 0.35) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 18px rgba(14, 165, 233, 0.55), 0 0 14px rgba(99, 102, 241, 0.45) !important;
+  box-shadow: 0 3px 12px rgba(37, 99, 235, 0.55), 0 0 10px rgba(99, 102, 241, 0.4) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 @keyframes fadeInDown {

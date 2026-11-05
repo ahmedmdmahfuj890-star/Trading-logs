@@ -357,18 +357,18 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
       </div>
 
       {/* Lot Size Calculator */}
-      <div className="glass-panel p-4 space-y-4 neon-glow">
-        <div className="flex items-center gap-2 border-b border-slate-700/60 pb-2">
-          <Calculator className="w-4 h-4 text-sky-400" />
-          <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">
+      <div className="glass-panel p-3 space-y-2.5 neon-glow">
+        <div className="flex items-center gap-2 border-b border-slate-700/60 pb-1.5">
+          <Calculator className="w-3.5 h-3.5 text-sky-400" />
+          <h3 className="text-xs font-bold text-white uppercase tracking-wider">
             🧮 Lot Size Calculator
           </h3>
         </div>
 
         {/* Inputs */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
+            <label className="text-[11px] font-semibold text-slate-300 block mb-0.5">
               Trades per day
             </label>
             <input
@@ -378,12 +378,12 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
               value={lot.t ?? ''}
               onChange={e => updateLot({ t: e.target.value })}
               placeholder="3"
-              className="w-full px-3 py-2 text-sm font-semibold rounded-xl bg-slate-900 border border-slate-700/60 text-slate-100"
+              className="w-full px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 border border-slate-700/60 text-slate-100 min-h-[36px]"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
+            <label className="text-[11px] font-semibold text-slate-300 block mb-0.5">
               Stop loss (pips)
             </label>
             <input
@@ -393,18 +393,18 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
               value={lot.s ?? ''}
               onChange={e => updateLot({ s: e.target.value })}
               placeholder="20"
-              className="w-full px-3 py-2 text-sm font-semibold rounded-xl bg-slate-900 border border-slate-700/60 text-slate-100"
+              className="w-full px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 border border-slate-700/60 text-slate-100 min-h-[36px]"
             />
           </div>
 
           <div className={lot.i === 'custom' ? 'col-span-1' : 'col-span-2'}>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
+            <label className="text-[11px] font-semibold text-slate-300 block mb-0.5">
               Instrument
             </label>
             <select
               value={lot.i}
               onChange={e => handleInstrumentChange(e.target.value)}
-              className="w-full px-3 py-2 text-sm font-semibold rounded-xl bg-slate-900 border border-slate-700/60 text-slate-100"
+              className="w-full px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 border border-slate-700/60 text-slate-100 min-h-[36px]"
             >
               <option value="eurusd">EURUSD</option>
               <option value="gbpusd">GBPUSD</option>
@@ -425,7 +425,7 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
 
           {lot.i === 'custom' && (
             <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">
+              <label className="text-[11px] font-semibold text-slate-300 block mb-0.5">
                 Instrument name
               </label>
               <input
@@ -433,13 +433,13 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                 value={lot.n ?? ''}
                 onChange={e => updateLot({ n: e.target.value })}
                 placeholder="e.g. NAS100"
-                className="w-full px-3 py-2 text-sm font-semibold rounded-xl bg-slate-900 border border-slate-700/60 text-slate-100"
+                className="w-full px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 border border-slate-700/60 text-slate-100 min-h-[36px]"
               />
             </div>
           )}
 
           <div className="col-span-2">
-            <label className="text-xs font-semibold text-slate-300 block mb-1">
+            <label className="text-[11px] font-semibold text-slate-300 block mb-0.5">
               Pip value per 1.00 lot ($) — broker অনুযায়ী দিন
             </label>
             <input
@@ -449,30 +449,30 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
               value={lot.p ?? ''}
               onChange={e => updateLot({ p: e.target.value })}
               placeholder="যেমন 10"
-              className="w-full px-3 py-2 text-sm font-semibold rounded-xl bg-slate-900 border border-slate-700/60 text-slate-100"
+              className="w-full px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 border border-slate-700/60 text-slate-100 min-h-[36px]"
             />
           </div>
         </div>
 
         {/* Live Capital vs Prop Firm Mode */}
-        <div className="pt-1">
+        <div className="pt-0.5">
           <button
             type="button"
             onClick={() => toggleMenu('account')}
-            className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/25 border border-white/20 hover:brightness-110 active:scale-[0.98] min-h-[38px] transition-all"
           >
             <span>{lot.a === 'prop' ? 'Prop Firm' : 'Live Capital'}</span>
-            <span className={`transition-transform text-xs ${openMenu === 'account' ? 'rotate-180' : ''}`}>▾</span>
+            <span className={`transition-transform text-[11px] ${openMenu === 'account' ? 'rotate-180' : ''}`}>▾</span>
           </button>
           {openMenu === 'account' && (
-            <div className="grid grid-cols-2 gap-2 p-2 mt-1.5 rounded-2xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+            <div className="grid grid-cols-2 gap-1.5 p-1.5 mt-1 rounded-xl bg-slate-950/95 border border-sky-500/35 shadow-xl animate-fadeIn">
               <button
                 type="button"
                 onClick={() => { handleAccountTypeSwitch('live'); setOpenMenu(null); }}
-                className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all min-h-[36px] ${
                   lot.a === 'live'
-                    ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
-                    : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                    ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-md shadow-sky-500/30'
+                    : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white'
                 }`}
               >
                 Live Capital
@@ -480,10 +480,10 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
               <button
                 type="button"
                 onClick={() => { handleAccountTypeSwitch('prop'); setOpenMenu(null); }}
-                className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all min-h-[36px] ${
                   lot.a === 'prop'
-                    ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
-                    : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                    ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-md shadow-sky-500/30'
+                    : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white'
                 }`}
               >
                 Prop Firm
@@ -494,19 +494,19 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
 
         {/* Prop Firm Sub-options */}
         {lot.a === 'prop' && (
-          <div className="space-y-2 pt-0.5">
+          <div className="space-y-1.5 pt-0.5">
             {/* 1-Step, 2-Step, Instant Dropdown */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => toggleMenu('challenge')}
-                className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/25 border border-white/20 hover:brightness-110 active:scale-[0.98] min-h-[38px] transition-all"
               >
                 <span>{lot.pt === '1' ? '1-Step' : lot.pt === '2' ? '2-Step' : 'Instant'}</span>
-                <span className={`transition-transform text-xs ${openMenu === 'challenge' ? 'rotate-180' : ''}`}>▾</span>
+                <span className={`transition-transform text-[11px] ${openMenu === 'challenge' ? 'rotate-180' : ''}`}>▾</span>
               </button>
               {openMenu === 'challenge' && (
-                <div className="grid grid-cols-3 gap-2 p-2 mt-1.5 rounded-2xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+                <div className="grid grid-cols-3 gap-1.5 p-1.5 mt-1 rounded-xl bg-slate-950/95 border border-sky-500/35 shadow-xl animate-fadeIn">
                   {[
                     { key: '1', label: '1-Step' },
                     { key: '2', label: '2-Step' },
@@ -521,10 +521,10 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                         applyPropSettings(lot.o, nextPh, item.key as any);
                         setOpenMenu(null);
                       }}
-                      className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                      className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all min-h-[36px] ${
                         lot.pt === item.key
-                          ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
-                          : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                          ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-md shadow-sky-500/30'
+                          : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white'
                       }`}
                     >
                       {item.label}
@@ -540,13 +540,13 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                 <button
                   type="button"
                   onClick={() => toggleMenu('phase')}
-                  className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                  className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/25 border border-white/20 hover:brightness-110 active:scale-[0.98] min-h-[38px] transition-all"
                 >
                   <span>{lot.ph === '1' ? 'Phase 1' : lot.ph === '2' ? 'Phase 2' : 'Prop Live'}</span>
-                  <span className={`transition-transform text-xs ${openMenu === 'phase' ? 'rotate-180' : ''}`}>▾</span>
+                  <span className={`transition-transform text-[11px] ${openMenu === 'phase' ? 'rotate-180' : ''}`}>▾</span>
                 </button>
                 {openMenu === 'phase' && (
-                  <div className="grid grid-cols-3 gap-2 p-2 mt-1.5 rounded-xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+                  <div className="grid grid-cols-3 gap-1.5 p-1.5 mt-1 rounded-xl bg-slate-950/95 border border-sky-500/35 shadow-xl animate-fadeIn">
                     {[
                       { key: '1', label: 'Phase 1' },
                       ...(lot.pt === '2' ? [{ key: '2', label: 'Phase 2' }] : []),
@@ -560,10 +560,10 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                           applyPropSettings(lot.o, item.key as any, lot.pt);
                           setOpenMenu(null);
                         }}
-                        className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                        className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all min-h-[36px] ${
                           lot.ph === item.key
-                            ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
-                            : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                            ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-md shadow-sky-500/30'
+                            : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white'
                         }`}
                       >
                         {item.label}
@@ -576,18 +576,18 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
 
             {/* Instant Profitable Days Requirement */}
             {lot.pt === 'i' && (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => toggleMenu('rate')}
-                    className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                    className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/25 border border-white/20 hover:brightness-110 active:scale-[0.98] min-h-[38px] transition-all"
                   >
                     <span>{lot.dp === '0.25' ? '০.২৫%' : '০.৫%'}</span>
-                    <span className={`transition-transform text-xs ${openMenu === 'rate' ? 'rotate-180' : ''}`}>▾</span>
+                    <span className={`transition-transform text-[11px] ${openMenu === 'rate' ? 'rotate-180' : ''}`}>▾</span>
                   </button>
                   {openMenu === 'rate' && (
-                    <div className="grid grid-cols-2 gap-2 p-2 mt-1.5 rounded-xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+                    <div className="grid grid-cols-2 gap-1.5 p-1.5 mt-1 rounded-xl bg-slate-950/95 border border-sky-500/35 shadow-xl animate-fadeIn">
                       {[
                         { key: '0.25', label: '০.২৫%' },
                         { key: '0.5', label: '০.৫%' }
@@ -599,10 +599,10 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                             updateLot({ dp: opt.key as any });
                             setOpenMenu(null);
                           }}
-                          className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                          className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all min-h-[36px] ${
                             (lot.dp || '0.5') === opt.key
-                              ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
-                              : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                              ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-md shadow-sky-500/30'
+                              : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white'
                           }`}
                         >
                           {opt.label}
@@ -616,13 +616,13 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                   <button
                     type="button"
                     onClick={() => toggleMenu('days')}
-                    className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                    className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/25 border border-white/20 hover:brightness-110 active:scale-[0.98] min-h-[38px] transition-all"
                   >
                     <span>{lot.dc} দিন</span>
-                    <span className={`transition-transform text-xs ${openMenu === 'days' ? 'rotate-180' : ''}`}>▾</span>
+                    <span className={`transition-transform text-[11px] ${openMenu === 'days' ? 'rotate-180' : ''}`}>▾</span>
                   </button>
                   {openMenu === 'days' && (
-                    <div className="grid grid-cols-3 gap-2 p-2 mt-1.5 rounded-xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+                    <div className="grid grid-cols-3 gap-1.5 p-1.5 mt-1 rounded-xl bg-slate-950/95 border border-sky-500/35 shadow-xl animate-fadeIn">
                       {['7', '5', '4'].map(dayCount => (
                         <button
                           key={dayCount}
@@ -631,10 +631,10 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                             updateLot({ dc: dayCount as any });
                             setOpenMenu(null);
                           }}
-                          className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                          className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all min-h-[36px] ${
                             lot.dc === dayCount
-                              ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
-                              : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                              ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-md shadow-sky-500/30'
+                              : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white'
                           }`}
                         >
                           {dayCount} দিন
@@ -653,13 +653,13 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
           <button
             type="button"
             onClick={() => toggleMenu('risk')}
-            className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/25 border border-white/20 hover:brightness-110 active:scale-[0.98] min-h-[38px] transition-all"
           >
             <span>{RISK_MODES[lot.m].label}</span>
-            <span className={`transition-transform text-xs ${openMenu === 'risk' ? 'rotate-180' : ''}`}>▾</span>
+            <span className={`transition-transform text-[11px] ${openMenu === 'risk' ? 'rotate-180' : ''}`}>▾</span>
           </button>
           {openMenu === 'risk' && (
-            <div className="grid grid-cols-3 gap-2 p-2 mt-1.5 rounded-xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+            <div className="grid grid-cols-3 gap-1.5 p-1.5 mt-1 rounded-xl bg-slate-950/95 border border-sky-500/35 shadow-xl animate-fadeIn">
               {(['safe', 'medium', 'high'] as const).map(rk => (
                 <button
                   key={rk}
@@ -668,10 +668,10 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                     updateLot({ m: rk });
                     setOpenMenu(null);
                   }}
-                  className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                  className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all min-h-[36px] ${
                     lot.m === rk
-                      ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
-                      : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                      ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-md shadow-sky-500/30'
+                      : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
                   {RISK_MODES[rk].label}
@@ -683,7 +683,7 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
 
         {/* Prop Firm Projection & Status Box */}
         {lot.a === 'prop' && (
-          <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700/60 space-y-1.5 text-xs">
+          <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-700/60 space-y-1 text-xs">
             {totalTargetNum > 0 ? (
               <>
                 {lot.ph === 'live' ? (
@@ -706,7 +706,7 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                       </b>{' '}
                       {lot.pt === 'i' ? `(ব্যালেন্সের ${lot.dp === '0.25' ? '০.২৫%' : '০.৫%'} · ${lot.dc} দিনে)` : '(20 দিনে)'}
                     </div>
-                    <div className="text-slate-400 text-[11px]">
+                    <div className="text-slate-400 text-[10.5px]">
                       To keep the funded account safe, do not trade beyond the target and do not raise the daily loss limit.
                     </div>
                   </>
@@ -722,14 +722,14 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                         <b className="text-sky-400">{Math.ceil(totalTargetNum / dailyNow())} days</b> to hit target
                       </div>
                     )}
-                    <div className="text-slate-400 text-[11px]">
+                    <div className="text-slate-400 text-[10.5px]">
                       Once the daily target is hit, stop trading for the day. Prop firms often require a minimum number of trading days.
                     </div>
                   </>
                 )}
 
                 {lot.pt === 'i' && (
-                  <div className="text-slate-300 pt-1 border-t border-slate-800 text-[11.5px]">
+                  <div className="text-slate-300 pt-0.5 border-t border-slate-800 text-[11px]">
                     লাভের দিন: <b className="text-emerald-400">{profitDaysData.count} / {lot.dc}</b>{' '}
                     (দিনের ব্যালেন্সের {lot.dp === '0.25' ? '০.২৫%' : '০.৫%'} লাভ হলে দিন গোনা হবে) ·{' '}
                     {profitDaysData.count >= Number(lot.dc)
@@ -739,7 +739,7 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
                 )}
               </>
             ) : (
-              <div className="text-slate-400">
+              <div className="text-slate-400 text-[11px]">
                 Enter a total profit target to see how many days it will take.
               </div>
             )}
@@ -748,20 +748,20 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
 
         {/* Lot Size Calculation Output Box */}
         {isCalcValid ? (
-          <div className="space-y-3 pt-1">
-            <div className="text-center bg-slate-900/90 border border-slate-700/70 rounded-2xl p-4 shadow-inner">
-              <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+          <div className="space-y-2 pt-0.5">
+            <div className="text-center bg-slate-900/90 border border-slate-700/70 rounded-xl p-2.5 shadow-inner">
+              <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
                 Lot size per trade
               </span>
-              <b className="block text-4xl sm:text-5xl font-extrabold text-transparent bg-gradient-to-r from-sky-400 to-indigo-300 bg-clip-text leading-none py-1">
+              <b className="block text-3xl font-extrabold text-transparent bg-gradient-to-r from-sky-400 to-indigo-300 bg-clip-text leading-none py-0.5">
                 {lotToUse.toFixed(2)}
               </b>
-              <span className="text-xs font-semibold text-slate-400 mt-1 block">
+              <span className="text-[11px] font-semibold text-slate-400 mt-0.5 block">
                 {tCount} trades, each
               </span>
             </div>
 
-            <div className="space-y-1.5 text-xs text-slate-300 leading-relaxed px-1">
+            <div className="space-y-1 text-[11.5px] text-slate-300 leading-snug px-0.5">
               <div>
                 {modeParam.label} mode ({Math.round(modeParam.factor * 100)}% of Max daily loss):
                 total daily risk <b className="text-white">{money(totalDailyRisk)}</b> → risk per trade{' '}
