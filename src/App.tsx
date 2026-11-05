@@ -2077,13 +2077,6 @@ export default function App() {
         document.querySelectorAll('#idp button').forEach(function (x: any) {
           x.classList.toggle('on', x.getAttribute('data-dp') === dp);
         });
-        const dclbl = document.getElementById('dclbl');
-        if (dclbl) {
-          dclbl.textContent =
-            'লাভের দিনের টার্গেট (দিনের ব্যালেন্সের ' +
-            (dp === '0.25' ? '০.২৫%' : '০.৫%') +
-            ' লাভ হলে দিন গোনা হবে)';
-        }
         document.querySelectorAll('#lcpt button').forEach(function (x: any) {
           x.classList.toggle('on', x.getAttribute('data-pt') === pt);
         });
@@ -2102,6 +2095,37 @@ export default function App() {
         document.querySelectorAll('#tpick button').forEach(function (x: any) {
           x.classList.toggle('on', x.getAttribute('data-p') === opt);
         });
+
+        // Update trigger texts
+        const lcaTrig = document.getElementById('lca_trig');
+        if (lcaTrig) {
+          const txt = acct === 'prop' ? 'Prop Firm' : 'Live Capital';
+          lcaTrig.innerHTML = '<span>' + txt + '</span><span class="arr">▾</span>';
+        }
+        const lcptTrig = document.getElementById('lcpt_trig');
+        if (lcptTrig) {
+          const ptMap: any = { '1': '1-Step', '2': '2-Step', 'i': 'Instant' };
+          lcptTrig.innerHTML = '<span>' + (ptMap[pt] || '1-Step') + '</span><span class="arr">▾</span>';
+        }
+        const lcphTrig = document.getElementById('lcph_trig');
+        if (lcphTrig) {
+          const phMap: any = { '1': 'Phase 1', '2': 'Phase 2', 'live': 'Prop Live' };
+          lcphTrig.innerHTML = '<span>' + (phMap[ph] || 'Phase 1') + '</span><span class="arr">▾</span>';
+        }
+        const lcmTrig = document.getElementById('lcm_trig');
+        if (lcmTrig) {
+          const mMap: any = { safe: 'Safe', medium: 'Medium Risk', high: 'High Risk' };
+          lcmTrig.innerHTML = '<span>' + (mMap[mode] || 'Medium Risk') + '</span><span class="arr">▾</span>';
+        }
+        const idpTrig = document.getElementById('idp_trig');
+        if (idpTrig) {
+          const dpTxt = dp === '0.25' ? '০.২৫%' : '০.৫%';
+          idpTrig.innerHTML = '<span>' + dpTxt + '</span><span class="arr">▾</span>';
+        }
+        const dcsTrig = document.getElementById('dcs_trig');
+        if (dcsTrig) {
+          dcsTrig.innerHTML = '<span>' + dc + ' দিন</span><span class="arr">▾</span>';
+        }
       }
 
       function allowedPcts() {
@@ -2111,10 +2135,10 @@ export default function App() {
       function syncLot() {
         if (E.lcnw) E.lcnw.style.display = E.lci?.value === 'custom' ? '' : 'none';
         const pr = acct === 'prop';
-        const lcptEl = document.getElementById('lcpt');
-        if (lcptEl) lcptEl.style.display = pr ? '' : 'none';
-        const lcphEl = document.getElementById('lcph');
-        if (lcphEl) lcphEl.style.display = pr && pt !== 'i' ? '' : 'none';
+        const lcptWrap = document.getElementById('lcpt_wrap');
+        if (lcptWrap) lcptWrap.style.display = pr ? '' : 'none';
+        const lcphWrap = document.getElementById('lcph_wrap');
+        if (lcphWrap) lcphWrap.style.display = pr && pt !== 'i' ? '' : 'none';
         const ph2Btn = document.querySelector('#lcph [data-ph="2"]') as HTMLElement;
         if (ph2Btn) ph2Btn.style.display = pt === '2' ? '' : 'none';
         const mindwEl = document.getElementById('mindw');
@@ -2381,6 +2405,56 @@ export default function App() {
         });
       });
 
+      function setupDrop(trigId: string, bodyId: string) {
+        const trig = document.getElementById(trigId);
+        const body = document.getElementById(bodyId);
+        if (!trig || !body) return;
+        trig.addEventListener('click', function (e) {
+          e.stopPropagation();
+          const isOpen = body.style.display !== 'none';
+          document.querySelectorAll('.drop-body').forEach(function (el: any) {
+            el.style.display = 'none';
+          });
+          document.querySelectorAll('.drop-trig').forEach(function (el: any) {
+            el.classList.remove('open');
+          });
+          if (!isOpen) {
+            body.style.display = 'grid';
+            trig.classList.add('open');
+          }
+        });
+      }
+
+      setupDrop('lca_trig', 'lca');
+      setupDrop('lcpt_trig', 'lcpt');
+      setupDrop('lcph_trig', 'lcph');
+      setupDrop('lcm_trig', 'lcm');
+      setupDrop('idp_trig', 'idp');
+      setupDrop('dcs_trig', 'dcs');
+
+      document.querySelectorAll('.drop-body button').forEach(function (x: any) {
+        x.addEventListener('click', function () {
+          const body = x.closest('.drop-body');
+          if (body) (body as HTMLElement).style.display = 'none';
+          const wrap = x.closest('.drop-wrap');
+          if (wrap) {
+            const trig = wrap.querySelector('.drop-trig');
+            if (trig) trig.classList.remove('open');
+          }
+        });
+      });
+
+      document.addEventListener('click', function (e: any) {
+        if (!e.target.closest('.drop-wrap')) {
+          document.querySelectorAll('.drop-body').forEach(function (el: any) {
+            (el as HTMLElement).style.display = 'none';
+          });
+          document.querySelectorAll('.drop-trig').forEach(function (el: any) {
+            el.classList.remove('open');
+          });
+        }
+      });
+
       (window as any).lcLoad = function () {
         const L = S.lot || {};
         if (E.lct) E.lct.value = L.t || 3;
@@ -2640,52 +2714,96 @@ export default function App() {
             </div>
           </div>
 
-          <div id="lca" className="modes" style={{ gridTemplateColumns: '1fr 1fr' }}>
-            <button data-a="live">Live Capital</button>
-            <button data-a="prop">Prop Firm</button>
-          </div>
-          <div
-            id="lcpt"
-            className="modes"
-            style={{ gridTemplateColumns: '1fr 1fr 1fr', display: 'none' }}
-          >
-            <button data-pt="1">1-Step</button>
-            <button data-pt="2">2-Step</button>
-            <button data-pt="i">Instant</button>
-          </div>
-          <div
-            id="lcph"
-            className="modes"
-            style={{ gridTemplateColumns: '1fr 1fr 1fr', display: 'none' }}
-          >
-            <button data-ph="1">Phase 1</button>
-            <button data-ph="2">Phase 2</button>
-            <button data-ph="live">Prop Live</button>
-          </div>
-          <div id="lcm" className="modes">
-            <button data-m="safe">Safe</button>
-            <button data-m="medium">Medium Risk</button>
-            <button data-m="high">High Risk</button>
-          </div>
-          <div id="mindw" style={{ display: 'none' }}>
-            <label>ডেলি টার্গেট রেট (% অফ ব্যালেন্স)</label>
-            <div
-              id="idp"
-              className="modes"
-              style={{ gridTemplateColumns: '1fr 1fr', margin: '6px 0 10px' }}
-            >
-              <button data-dp="0.25">০.২৫%</button>
-              <button data-dp="0.5">০.৫%</button>
+          {/* Account Type Dropdown */}
+          <div id="lca_wrap" className="drop-wrap">
+            <button id="lca_trig" type="button" className="drop-trig">
+              <span>Live Capital</span>
+              <span className="arr">▾</span>
+            </button>
+            <div id="lca" className="modes drop-body" style={{ gridTemplateColumns: '1fr 1fr', display: 'none' }}>
+              <button data-a="live">Live Capital</button>
+              <button data-a="prop">Prop Firm</button>
             </div>
-            <label id="dclbl">লাভের দিনের টার্গেট (দিনের ব্যালেন্সের ০.৫% লাভ হলে দিন গোনা হবে)</label>
+          </div>
+
+          {/* Prop Challenge Type Dropdown */}
+          <div id="lcpt_wrap" className="drop-wrap" style={{ display: 'none' }}>
+            <button id="lcpt_trig" type="button" className="drop-trig">
+              <span>1-Step</span>
+              <span className="arr">▾</span>
+            </button>
             <div
-              id="dcs"
-              className="modes"
-              style={{ gridTemplateColumns: '1fr 1fr 1fr', margin: '6px 0 0' }}
+              id="lcpt"
+              className="modes drop-body"
+              style={{ gridTemplateColumns: '1fr 1fr 1fr', display: 'none' }}
             >
-              <button data-dc="7">৭ দিন</button>
-              <button data-dc="5">৫ দিন</button>
-              <button data-dc="4">৪ দিন</button>
+              <button data-pt="1">1-Step</button>
+              <button data-pt="2">2-Step</button>
+              <button data-pt="i">Instant</button>
+            </div>
+          </div>
+
+          {/* Prop Phase Dropdown */}
+          <div id="lcph_wrap" className="drop-wrap" style={{ display: 'none' }}>
+            <button id="lcph_trig" type="button" className="drop-trig">
+              <span>Phase 1</span>
+              <span className="arr">▾</span>
+            </button>
+            <div
+              id="lcph"
+              className="modes drop-body"
+              style={{ gridTemplateColumns: '1fr 1fr 1fr', display: 'none' }}
+            >
+              <button data-ph="1">Phase 1</button>
+              <button data-ph="2">Phase 2</button>
+              <button data-ph="live">Prop Live</button>
+            </div>
+          </div>
+
+          {/* Risk Mode Dropdown */}
+          <div id="lcm_wrap" className="drop-wrap">
+            <button id="lcm_trig" type="button" className="drop-trig">
+              <span>Medium Risk</span>
+              <span className="arr">▾</span>
+            </button>
+            <div id="lcm" className="modes drop-body" style={{ display: 'none' }}>
+              <button data-m="safe">Safe</button>
+              <button data-m="medium">Medium Risk</button>
+              <button data-m="high">High Risk</button>
+            </div>
+          </div>
+
+          {/* Instant Settings */}
+          <div id="mindw" style={{ display: 'none' }}>
+            <div id="idp_wrap" className="drop-wrap">
+              <button id="idp_trig" type="button" className="drop-trig">
+                <span>০.৫%</span>
+                <span className="arr">▾</span>
+              </button>
+              <div
+                id="idp"
+                className="modes drop-body"
+                style={{ gridTemplateColumns: '1fr 1fr', display: 'none' }}
+              >
+                <button data-dp="0.25">০.২৫%</button>
+                <button data-dp="0.5">০.৫%</button>
+              </div>
+            </div>
+
+            <div id="dcs_wrap" className="drop-wrap">
+              <button id="dcs_trig" type="button" className="drop-trig">
+                <span>৭ দিন</span>
+                <span className="arr">▾</span>
+              </button>
+              <div
+                id="dcs"
+                className="modes drop-body"
+                style={{ gridTemplateColumns: '1fr 1fr 1fr', display: 'none' }}
+              >
+                <button data-dc="7">৭ দিন</button>
+                <button data-dc="5">৫ দিন</button>
+                <button data-dc="4">৪ দিন</button>
+              </div>
             </div>
           </div>
           <div id="propbox" style={{ display: 'none' }}></div>

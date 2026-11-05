@@ -234,3 +234,98 @@ button.reset{background:var(--card);border:1px solid var(--bd);border-radius:16p
  .card,.stat,.msc{box-shadow:0 4px 12px rgba(0,0,0,.35)!important}
  .card:hover{transform:none!important}
 }
+
+/* Accordion Dropdown Styles for Lot Calculator Options */
+.drop-wrap {
+  margin: 10px 0;
+  position: relative;
+}
+.drop-trig {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 20px;
+  min-height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2b7fff 0%, #5664f5 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(43, 127, 255, 0.4), 0 0 16px rgba(86, 100, 245, 0.25);
+  color: #ffffff !important;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.drop-trig:hover {
+  background: linear-gradient(135deg, #3a8cff 0%, #6875f8 100%);
+  box-shadow: 0 6px 20px rgba(43, 127, 255, 0.55), 0 0 22px rgba(86, 100, 245, 0.35);
+  transform: translateY(-1px);
+}
+.drop-trig:active {
+  transform: scale(0.985);
+}
+.drop-trig.open {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4), 0 8px 24px rgba(43, 127, 255, 0.5);
+}
+.drop-trig span {
+  color: #ffffff !important;
+  font-weight: 700;
+}
+.drop-trig .arr {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-left: 2px;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.drop-trig.open .arr {
+  transform: rotate(180deg);
+}
+.drop-body {
+  margin-top: 8px !important;
+  background: rgba(11, 17, 33, 0.96);
+  padding: 10px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 24px rgba(14, 165, 233, 0.15);
+  animation: fadeInDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 8px !important;
+}
+.drop-body button {
+  min-height: 44px;
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.9);
+  color: #cbd5e1;
+  transition: all 0.2s ease;
+}
+.drop-body button:hover {
+  border-color: rgba(56, 189, 248, 0.6);
+  color: #ffffff;
+  background: rgba(30, 41, 59, 0.95);
+  box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+}
+.drop-body button.on {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 18px rgba(14, 165, 233, 0.55), 0 0 14px rgba(99, 102, 241, 0.45) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

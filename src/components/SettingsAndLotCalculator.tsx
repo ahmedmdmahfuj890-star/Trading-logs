@@ -11,6 +11,8 @@ interface SettingsProps {
 
 export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onChange }) => {
   const [showTargetPicker, setShowTargetPicker] = useState(false);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const toggleMenu = (key: string) => setOpenMenu(prev => (prev === key ? null : key));
 
   // Lot config state with safe defaults
   const lot: LotConfig = {
@@ -453,135 +455,193 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
         </div>
 
         {/* Live Capital vs Prop Firm Mode */}
-        <div className="grid grid-cols-2 gap-2 pt-1">
+        <div className="pt-1">
           <button
             type="button"
-            onClick={() => handleAccountTypeSwitch('live')}
-            className={`py-2 px-3 text-xs sm:text-sm font-bold rounded-xl border transition-all ${
-              lot.a === 'live'
-                ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-transparent shadow-lg shadow-sky-950/40'
-                : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
-            }`}
+            onClick={() => toggleMenu('account')}
+            className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
           >
-            Live Capital
+            <span>{lot.a === 'prop' ? 'Prop Firm' : 'Live Capital'}</span>
+            <span className={`transition-transform text-xs ${openMenu === 'account' ? 'rotate-180' : ''}`}>▾</span>
           </button>
-          <button
-            type="button"
-            onClick={() => handleAccountTypeSwitch('prop')}
-            className={`py-2 px-3 text-xs sm:text-sm font-bold rounded-xl border transition-all ${
-              lot.a === 'prop'
-                ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-transparent shadow-lg shadow-sky-950/40'
-                : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
-            }`}
-          >
-            Prop Firm
-          </button>
+          {openMenu === 'account' && (
+            <div className="grid grid-cols-2 gap-2 p-2 mt-1.5 rounded-2xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+              <button
+                type="button"
+                onClick={() => { handleAccountTypeSwitch('live'); setOpenMenu(null); }}
+                className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                  lot.a === 'live'
+                    ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
+                    : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                }`}
+              >
+                Live Capital
+              </button>
+              <button
+                type="button"
+                onClick={() => { handleAccountTypeSwitch('prop'); setOpenMenu(null); }}
+                className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                  lot.a === 'prop'
+                    ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
+                    : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                }`}
+              >
+                Prop Firm
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Prop Firm Sub-options */}
         {lot.a === 'prop' && (
-          <div className="space-y-2.5 pt-1">
-            {/* 1-Step, 2-Step, Instant */}
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { key: '1', label: '1-Step' },
-                { key: '2', label: '2-Step' },
-                { key: 'i', label: 'Instant' }
-              ].map(item => (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => {
-                    const nextPh = item.key === 'i' ? 'live' : '1';
-                    updateLot({ pt: item.key as any, ph: nextPh });
-                    applyPropSettings(lot.o, nextPh, item.key as any);
-                  }}
-                  className={`py-1.5 px-2 text-xs font-bold rounded-xl border transition-all ${
-                    lot.pt === item.key
-                      ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-transparent shadow-md'
-                      : 'bg-slate-900 text-slate-300 border-slate-700'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
+          <div className="space-y-2 pt-0.5">
+            {/* 1-Step, 2-Step, Instant Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => toggleMenu('challenge')}
+                className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+              >
+                <span>{lot.pt === '1' ? '1-Step' : lot.pt === '2' ? '2-Step' : 'Instant'}</span>
+                <span className={`transition-transform text-xs ${openMenu === 'challenge' ? 'rotate-180' : ''}`}>▾</span>
+              </button>
+              {openMenu === 'challenge' && (
+                <div className="grid grid-cols-3 gap-2 p-2 mt-1.5 rounded-2xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+                  {[
+                    { key: '1', label: '1-Step' },
+                    { key: '2', label: '2-Step' },
+                    { key: 'i', label: 'Instant' }
+                  ].map(item => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => {
+                        const nextPh = item.key === 'i' ? 'live' : '1';
+                        updateLot({ pt: item.key as any, ph: nextPh });
+                        applyPropSettings(lot.o, nextPh, item.key as any);
+                        setOpenMenu(null);
+                      }}
+                      className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                        lot.pt === item.key
+                          ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
+                          : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Phases buttons */}
+            {/* Phases Dropdown */}
             {lot.pt !== 'i' && (
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { key: '1', label: 'Phase 1' },
-                  ...(lot.pt === '2' ? [{ key: '2', label: 'Phase 2' }] : []),
-                  { key: 'live', label: 'Prop Live' }
-                ].map(item => (
-                  <button
-                    key={item.key}
-                    type="button"
-                    onClick={() => {
-                      updateLot({ ph: item.key as any });
-                      applyPropSettings(lot.o, item.key as any, lot.pt);
-                    }}
-                    className={`py-1.5 px-2 text-xs font-bold rounded-xl border transition-all ${
-                      lot.ph === item.key
-                        ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-transparent'
-                        : 'bg-slate-900 text-slate-300 border-slate-700'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => toggleMenu('phase')}
+                  className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                >
+                  <span>{lot.ph === '1' ? 'Phase 1' : lot.ph === '2' ? 'Phase 2' : 'Prop Live'}</span>
+                  <span className={`transition-transform text-xs ${openMenu === 'phase' ? 'rotate-180' : ''}`}>▾</span>
+                </button>
+                {openMenu === 'phase' && (
+                  <div className="grid grid-cols-3 gap-2 p-2 mt-1.5 rounded-xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+                    {[
+                      { key: '1', label: 'Phase 1' },
+                      ...(lot.pt === '2' ? [{ key: '2', label: 'Phase 2' }] : []),
+                      { key: 'live', label: 'Prop Live' }
+                    ].map(item => (
+                      <button
+                        key={item.key}
+                        type="button"
+                        onClick={() => {
+                          updateLot({ ph: item.key as any });
+                          applyPropSettings(lot.o, item.key as any, lot.pt);
+                          setOpenMenu(null);
+                        }}
+                        className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                          lot.ph === item.key
+                            ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
+                            : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
             {/* Instant Profitable Days Requirement */}
             {lot.pt === 'i' && (
-              <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 space-y-2">
-                <div>
-                  <label className="text-[11.5px] font-semibold text-slate-300 block mb-1.5">
-                    ডেলি টার্গেট রেট (% অফ ব্যালেন্স)
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {[
-                      { key: '0.25', label: '০.২৫%' },
-                      { key: '0.5', label: '০.৫%' }
-                    ].map(opt => (
-                      <button
-                        key={opt.key}
-                        type="button"
-                        onClick={() => updateLot({ dp: opt.key as any })}
-                        className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all ${
-                          (lot.dp || '0.5') === opt.key
-                            ? 'bg-sky-600 text-white border-sky-400'
-                            : 'bg-slate-800 text-slate-300 border-slate-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
+              <div className="space-y-2">
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => toggleMenu('rate')}
+                    className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                  >
+                    <span>{lot.dp === '0.25' ? '০.২৫%' : '০.৫%'}</span>
+                    <span className={`transition-transform text-xs ${openMenu === 'rate' ? 'rotate-180' : ''}`}>▾</span>
+                  </button>
+                  {openMenu === 'rate' && (
+                    <div className="grid grid-cols-2 gap-2 p-2 mt-1.5 rounded-xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+                      {[
+                        { key: '0.25', label: '০.২৫%' },
+                        { key: '0.5', label: '০.৫%' }
+                      ].map(opt => (
+                        <button
+                          key={opt.key}
+                          type="button"
+                          onClick={() => {
+                            updateLot({ dp: opt.key as any });
+                            setOpenMenu(null);
+                          }}
+                          className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                            (lot.dp || '0.5') === opt.key
+                              ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
+                              : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div>
-                  <label className="text-[11.5px] font-semibold text-slate-300 block mb-1.5">
-                    লাভের দিনের টার্গেট (দিনের ব্যালেন্সের {lot.dp === '0.25' ? '০.২৫%' : '০.৫%'} লাভ হলে দিন গোনা হবে)
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {['7', '5', '4'].map(dayCount => (
-                      <button
-                        key={dayCount}
-                        type="button"
-                        onClick={() => updateLot({ dc: dayCount as any })}
-                        className={`py-1 px-2 text-xs font-bold rounded-lg border transition-all ${
-                          lot.dc === dayCount
-                            ? 'bg-indigo-600 text-white border-indigo-400'
-                            : 'bg-slate-800 text-slate-300 border-slate-700'
-                        }`}
-                      >
-                        {dayCount} দিন
-                      </button>
-                    ))}
-                  </div>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => toggleMenu('days')}
+                    className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                  >
+                    <span>{lot.dc} দিন</span>
+                    <span className={`transition-transform text-xs ${openMenu === 'days' ? 'rotate-180' : ''}`}>▾</span>
+                  </button>
+                  {openMenu === 'days' && (
+                    <div className="grid grid-cols-3 gap-2 p-2 mt-1.5 rounded-xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+                      {['7', '5', '4'].map(dayCount => (
+                        <button
+                          key={dayCount}
+                          type="button"
+                          onClick={() => {
+                            updateLot({ dc: dayCount as any });
+                            setOpenMenu(null);
+                          }}
+                          className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                            lot.dc === dayCount
+                              ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
+                              : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                          }`}
+                        >
+                          {dayCount} দিন
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -589,21 +649,36 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
         )}
 
         {/* Risk Profile Selection: Safe / Medium / High */}
-        <div className="grid grid-cols-3 gap-2 pt-1">
-          {(['safe', 'medium', 'high'] as const).map(rk => (
-            <button
-              key={rk}
-              type="button"
-              onClick={() => updateLot({ m: rk })}
-              className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
-                lot.m === rk
-                  ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-transparent shadow-md'
-                  : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
-              }`}
-            >
-              {RISK_MODES[rk].label}
-            </button>
-          ))}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => toggleMenu('risk')}
+            className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/30 border border-white/20 hover:brightness-110 active:scale-[0.98] transition-all"
+          >
+            <span>{RISK_MODES[lot.m].label}</span>
+            <span className={`transition-transform text-xs ${openMenu === 'risk' ? 'rotate-180' : ''}`}>▾</span>
+          </button>
+          {openMenu === 'risk' && (
+            <div className="grid grid-cols-3 gap-2 p-2 mt-1.5 rounded-xl bg-slate-950/95 border border-sky-500/40 shadow-2xl animate-fadeIn">
+              {(['safe', 'medium', 'high'] as const).map(rk => (
+                <button
+                  key={rk}
+                  type="button"
+                  onClick={() => {
+                    updateLot({ m: rk });
+                    setOpenMenu(null);
+                  }}
+                  className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all ${
+                    lot.m === rk
+                      ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-white/30 shadow-lg shadow-sky-500/40 ring-1 ring-sky-300/40'
+                      : 'bg-slate-900 text-slate-300 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-500/40'
+                  }`}
+                >
+                  {RISK_MODES[rk].label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Prop Firm Projection & Status Box */}
