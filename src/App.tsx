@@ -2572,18 +2572,6 @@ export default function App() {
         <button className="reset" id="dl" style={{ margin: 0, width: '100%' }}>
           ⬇ Download image (PNG)
         </button>
-        <button className="reset" id="bk" style={{ margin: '6px 0 0', width: '100%' }}>
-          ⬇ Backup (সব মাসের ডেটা)
-        </button>
-        <button className="reset" id="rs" style={{ margin: '6px 0 0', width: '100%' }}>
-          ⬆ Restore (ব্যাকআপ ফাইল থেকে)
-        </button>
-        <input
-          type="file"
-          id="rsf"
-          accept=".json,application/json,text/plain"
-          style={{ display: 'none' }}
-        />
       </div>
 
       <h2>🌍 ফরেক্স মার্কেট সেশন</h2>
