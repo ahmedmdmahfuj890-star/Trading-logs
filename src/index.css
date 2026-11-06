@@ -162,11 +162,16 @@ h1{background:none;color:var(--tx);-webkit-text-fill-color:initial}
 #stats .stat:last-child span{font-size:15px;font-weight:700}
 #stats .stat:last-child b{font-size:40px;letter-spacing:-.02em;margin-top:6px;color:var(--ink)}
 
-/* lot calculator compact & sleek */
-#lc{margin-top:4px}
-#lc .two{gap:8px}
-#lc label{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:3px}
-#lc input,#lc select{min-height:38px;height:38px;padding:6px 10px;font-size:13px;border-radius:10px}
+/* upper settings card & lot calculator compact & sleek */
+#scard,#lc{margin-top:4px}
+#scard.two,#lc .two{gap:8px}
+#scard label,#lc label{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:3px}
+#scard input,#scard select,#lc input,#lc select{min-height:38px;height:38px;padding:6px 10px;font-size:13px;border-radius:10px}
+#tpick{background:rgba(10,16,30,.98)!important;border:1.5px solid rgba(56,189,248,.4)!important;border-radius:14px!important;padding:7px!important;gap:6px!important;box-shadow:0 12px 32px rgba(0,0,0,.7),0 0 18px rgba(14,165,233,.2)!important;backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important}
+.pickbtn{font:inherit;font-weight:700;font-size:12px!important;min-height:38px!important;padding:5px 8px!important;border-radius:10px!important;border:1px solid rgba(148,163,184,.25)!important;background:rgba(15,23,42,.92)!important;color:#cbd5e1!important;cursor:pointer;transition:all .2s cubic-bezier(0.4, 0, 0.2, 1);display:flex;align-items:center;justify-content:center;text-align:center}
+.pickbtn:hover{border-color:rgba(56,189,248,.7)!important;color:#ffffff!important;background:rgba(30,41,59,.96)!important;box-shadow:0 2px 10px rgba(14,165,233,.25)!important;transform:translateY(-1px)}
+.pickbtn:active{transform:scale(0.98)}
+.pickbtn.on{background:linear-gradient(135deg,#2b7fff 0%,#5664f5 100%)!important;border-color:rgba(255,255,255,.35)!important;color:#ffffff!important;box-shadow:0 3px 14px rgba(43,127,255,.55),0 0 12px rgba(86,100,245,.4)!important;text-shadow:0 1px 2px rgba(0,0,0,.35)}
 #propbox{background:rgba(15,23,42,.7);border:1px solid rgba(56,189,248,.25);border-radius:12px;padding:8px 11px;margin-top:8px}
 #propbox .lcln{font-size:11.5px;margin:3px 0 0;line-height:1.4;color:#cbd5e1}
 #propbox .lcln:first-child{margin-top:0}
@@ -181,7 +186,7 @@ h1{background:none;color:var(--tx);-webkit-text-fill-color:initial}
 #lcout .lcwarn{font-size:11.5px;font-weight:700;color:#f87171;margin:5px 0 0;line-height:1.35}
 #lcout table{margin-top:6px;font-size:11.5px}
 #lcout th,#lcout td{padding:5px 4px}
-.pickbtn{font:inherit;font-weight:700;font-size:14px;min-height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--tx);cursor:pointer}.pickbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 12px}.modes button{font:inherit;font-weight:700;font-size:13.5px;min-height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--tx);cursor:pointer}.modes button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 12px}.modes button{font:inherit;font-weight:700;font-size:13.5px;min-height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--tx);cursor:pointer}.modes button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 
 /* ===== modern theme (final layer) ===== */
 :root:not([data-theme="x"]){--bg:#070b14;--card:rgba(17,24,39,.72);--in:#0f172a;--tx:#e6ecf5;--mut:#8a97ad;--bd:rgba(148,163,184,.16);--ink:#1e3a5f;--gn:#34d399;--rd:#f87171;--gnbg:rgba(16,185,129,.12);--gnbd:rgba(52,211,153,.35);--rdbg:rgba(239,68,68,.12);--rdbd:rgba(248,113,113,.35)}

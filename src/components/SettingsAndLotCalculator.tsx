@@ -84,18 +84,39 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
   };
 
   // Prop firm calculation helpers
-  const allowedPcts = lot.pt === '2' ? [10, 8, 6] : [10, 9, 8, 7, 6];
+  const allowedPcts =
+    lot.pt === '1'
+      ? [12, 10, 9, 8, 7, 6]
+      : lot.pt === '2'
+      ? lot.ph === '2'
+        ? [8, 6, 5, 4]
+        : [10, 8, 6]
+      : [10, 8, 6];
 
-  const dailyNow = () => {
+  const dailyNow = (targetOpt = lot.o, targetPh = lot.ph) => {
     const b = (num(month.s) || 10000) / 10000;
-    const pc = Number(lot.o || 10);
-    const base = lot.ph === '1' ? pc * 10 : 60 - (pc - 8) * 5;
+    const pc = Number(targetOpt || (targetPh === '2' ? 8 : 10));
+    const base = targetPh === '1' ? pc * 10 : Math.max(25, Math.round((pc * 100) / 12));
     return Math.round(base * b * 100) / 100;
   };
 
   const applyPropSettings = (newOpt = lot.o, newPh = lot.ph, newPt = lot.pt) => {
     const b = num(month.s);
     if (!(b > 0)) return;
+
+    const validPcts =
+      newPt === '1'
+        ? [12, 10, 9, 8, 7, 6]
+        : newPt === '2'
+        ? newPh === '2'
+          ? [8, 6, 5, 4]
+          : [10, 8, 6]
+        : [10, 8, 6];
+
+    let snappedOpt = newOpt;
+    if (!validPcts.includes(Number(snappedOpt))) {
+      snappedOpt = String(validPcts[0]);
+    }
 
     if (newPh === 'live') {
       const T = Math.round(b * 0.05 * 100) / 100;
@@ -106,20 +127,20 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
         mt: String(T),
         dt: String(d),
         l: lossPct,
-        lot: { ...lot, o: newOpt, ph: newPh, pt: newPt }
+        lot: { ...lot, o: snappedOpt, ph: newPh, pt: newPt }
       });
       return;
     }
 
-    const T = Math.round((b * Number(newOpt)) / 100 * 100) / 100;
-    const d = dailyNow();
+    const T = Math.round(((b * Number(snappedOpt)) / 100) * 100) / 100;
+    const d = dailyNow(snappedOpt, newPh);
     const lossPct = String(+((d / b) * 100).toFixed(2));
     onChange({
       ...month,
       mt: String(T),
       dt: String(d),
       l: lossPct,
-      lot: { ...lot, o: newOpt, ph: newPh, pt: newPt }
+      lot: { ...lot, o: snappedOpt, ph: newPh, pt: newPt }
     });
   };
 
@@ -326,29 +347,36 @@ export const SettingsAndLotCalculator: React.FC<SettingsProps> = ({ month, onCha
 
                 {/* Target percentage pick popover for Prop Firm */}
                 {showTargetPicker && lot.a === 'prop' && lot.ph !== 'live' && (
-                  <div className="absolute right-0 top-full mt-1.5 w-52 z-30 grid grid-cols-2 gap-1.5 p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl">
-                    {allowedPcts.map(pctVal => {
-                      const dollarAmt = Math.round((startingBalanceNum * pctVal) / 100);
-                      return (
-                        <button
-                          key={pctVal}
-                          type="button"
-                          onClick={() => {
-                            updateLot({ o: String(pctVal) });
-                            applyPropSettings(String(pctVal));
-                            setShowTargetPicker(false);
-                          }}
-                          className={`py-1.5 px-2 text-xs font-bold rounded-lg border transition-all ${
-                            lot.o === String(pctVal)
-                              ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white border-transparent'
-                              : 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
-                          }`}
-                        >
-                          {pctVal}% · ${dollarAmt}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <>
+                    <div
+                      className="fixed inset-0 z-20"
+                      onClick={() => setShowTargetPicker(false)}
+                    />
+                    <div className="absolute right-0 top-full mt-1.5 w-56 z-30 grid grid-cols-2 gap-1.5 p-2 bg-slate-950/98 border border-sky-500/35 rounded-xl shadow-2xl backdrop-blur-md animate-fadeIn">
+                      {allowedPcts.map(pctVal => {
+                        const dollarAmt = Math.round((startingBalanceNum * pctVal) / 100);
+                        const isSelected = lot.o === String(pctVal);
+                        return (
+                          <button
+                            key={pctVal}
+                            type="button"
+                            onClick={() => {
+                              updateLot({ o: String(pctVal) });
+                              applyPropSettings(String(pctVal));
+                              setShowTargetPicker(false);
+                            }}
+                            className={`py-2 px-2 text-xs font-bold rounded-lg border transition-all min-h-[36px] ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-white/30 shadow-md shadow-blue-500/35'
+                                : 'bg-slate-900/90 text-slate-200 border-slate-700/80 hover:bg-slate-800 hover:text-white hover:border-sky-400'
+                            }`}
+                          >
+                            {pctVal}% · ${dollarAmt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
                 )}
               </div>
             </div>

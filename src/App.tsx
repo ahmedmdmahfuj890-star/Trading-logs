@@ -1856,8 +1856,8 @@ export default function App() {
 
       function dailyNow() {
         const b = (num(startEl?.value) || 10000) / 10000;
-        const pc = Number(opt);
-        const base = ph === '1' ? pc * 10 : 60 - (pc - 8) * 5;
+        const pc = Number(opt) || (ph === '2' ? 8 : 10);
+        const base = ph === '1' ? pc * 10 : Math.max(25, Math.round((pc * 100) / 12));
         return Math.round(base * b * 100) / 100;
       }
 
@@ -2129,7 +2129,9 @@ export default function App() {
       }
 
       function allowedPcts() {
-        return pt === '2' ? [10, 8, 6] : [10, 9, 8, 7, 6];
+        if (pt === '1') return [12, 10, 9, 8, 7, 6];
+        if (pt === '2') return ph === '2' ? [8, 6, 5, 4] : [10, 8, 6];
+        return [10, 8, 6];
       }
 
       function syncLot() {
@@ -2232,6 +2234,10 @@ export default function App() {
         if (n === '1') ph = '1';
         if (n === 'i') ph = 'live';
         if (n === '2' && ph !== '1' && ph !== '2' && ph !== 'live') ph = '1';
+        const allowed = allowedPcts();
+        if (!allowed.includes(Number(opt))) {
+          opt = String(allowed[0]);
+        }
       }
 
       function saveSnap(k: string) {
@@ -2349,6 +2355,14 @@ export default function App() {
         });
       });
 
+      document.addEventListener('click', function (e: any) {
+        const tpickEl = document.getElementById('tpick');
+        if (!tpickEl || tpickEl.style.display === 'none') return;
+        if (mtgt && (mtgt === e.target || mtgt.contains(e.target))) return;
+        if (tpickEl === e.target || tpickEl.contains(e.target)) return;
+        tpickEl.style.display = 'none';
+      });
+
       document.querySelectorAll('#lcm button').forEach(function (x: any) {
         x.addEventListener('click', function () {
           mode = x.getAttribute('data-m');
@@ -2367,6 +2381,10 @@ export default function App() {
       document.querySelectorAll('#lcph button').forEach(function (x: any) {
         x.addEventListener('click', function () {
           ph = x.getAttribute('data-ph');
+          const allowed = allowedPcts();
+          if (!allowed.includes(Number(opt))) {
+            opt = String(allowed[0]);
+          }
           markBtns();
           syncLot();
           autoTarget();
@@ -2470,7 +2488,7 @@ export default function App() {
         if (E.lcn) E.lcn.value = L.n || '';
         mode = MODES[L.m] ? L.m : 'medium';
         acct = L.a === 'prop' ? 'prop' : 'live';
-        opt = L.o && /^(6|7|8|9|10)$/.test(L.o) ? L.o : '10';
+        opt = L.o && /^(4|5|6|7|8|9|10|12)$/.test(L.o) ? L.o : '10';
         ph = L.ph === '2' || L.ph === 'live' ? L.ph : '1';
         pt = /^(1|2|i)$/.test(L.pt) ? L.pt : '2';
         if (pt === '1' && ph === '2') ph = '1';
@@ -2587,7 +2605,7 @@ export default function App() {
         from 0.
       </p>
 
-      <div className="card two">
+      <div className="card two" id="scard">
         <div style={{ gridColumn: '1/-1' }}>
           <label>
             Starting balance ($) <span id="startk" style={{ color: 'var(--gn)' }}></span>
@@ -2637,7 +2655,7 @@ export default function App() {
                 right: 0,
                 top: '100%',
                 marginTop: '6px',
-                width: '210px',
+                width: '220px',
                 zIndex: 30,
                 gridTemplateColumns: '1fr 1fr',
                 gap: '6px',
@@ -2648,6 +2666,9 @@ export default function App() {
                 boxShadow: '0 10px 30px rgba(0,0,0,.35)'
               }}
             >
+              <button data-p="12" className="pickbtn">
+                12%
+              </button>
               <button data-p="10" className="pickbtn">
                 10%
               </button>
@@ -2662,6 +2683,12 @@ export default function App() {
               </button>
               <button data-p="6" className="pickbtn">
                 6%
+              </button>
+              <button data-p="5" className="pickbtn">
+                5%
+              </button>
+              <button data-p="4" className="pickbtn">
+                4%
               </button>
             </div>
           </div>
