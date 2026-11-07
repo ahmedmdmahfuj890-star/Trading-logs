@@ -1382,70 +1382,140 @@ export default function App() {
       return L;
     }
 
+    function drawPdfRoundRect(
+      ctx: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      r: number
+    ) {
+      if (typeof (ctx as any).roundRect === 'function') {
+        ctx.beginPath();
+        (ctx as any).roundRect(x, y, w, h, r);
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      }
+    }
+
     function jpng(cb: any) {
       const lines = jlines();
-      const W = 900;
-      const pad = 24;
+      const W = 2000;
+      const pad = 60;
+      const maxW = W - 2 * pad;
       const cv = document.createElement('canvas');
       const x = cv.getContext('2d')!;
-      const F = 'Arial, "Noto Sans Bengali", sans-serif';
+      const F =
+        'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", "Kalpurush", "SolaimanLipi", sans-serif';
       const stMap: any = {
-        h1: [22, 'bold', '#111827'],
-        h2: [17, 'bold', '#1f2937'],
-        t: [15, '', '#111827'],
-        b: [16, 'bold', '#111827'],
-        p: [16, 'bold', '#15803d'],
-        n: [16, 'bold', '#b91c1c'],
-        gap: [8, '', '#000']
+        h1: [46, 'bold', '#0f172a', 70],
+        h2: [36, 'bold', '#1e293b', 54],
+        t: [28, '', '#334155', 44],
+        b: [32, 'bold', '#0f172a', 48],
+        p: [32, 'bold', '#15803d', 48],
+        n: [32, 'bold', '#b91c1c', 48],
+        gap: [18, '', '#000', 20]
       };
+
       function wrap(t: any, font: string, max: number) {
         x.font = font;
+        const paras = String(t == null ? '' : t).split('\n');
         const out: string[] = [];
-        let cur = '';
-        String(t)
-          .split(' ')
-          .forEach(function (w) {
+        paras.forEach(function (para) {
+          if (!para) {
+            out.push('');
+            return;
+          }
+          const words = para.split(' ');
+          let cur = '';
+          words.forEach(function (w) {
             const tt = cur ? cur + ' ' + w : w;
             if (x.measureText(tt).width > max && cur) {
               out.push(cur);
               cur = w;
             } else cur = tt;
           });
-        out.push(cur);
-        return out;
+          if (cur) out.push(cur);
+        });
+        return out.length ? out : [''];
       }
+
       const items: any[] = [];
       let y = pad;
       lines.forEach(function (l: any) {
-        const s = stMap[l[0]];
+        const s = stMap[l[0]] || [28, '', '#334155', 44];
         const font = (s[1] ? s[1] + ' ' : '') + s[0] + 'px ' + F;
-        const lh = Math.round(s[0] * 1.5);
-        const ws = l[0] === 'gap' ? [''] : wrap(l[1], font, W - 2 * pad);
-        if (l[0] === 'h2') y += 12;
-        ws.forEach(function (w: string, j: number) {
-          items.push([
-            w,
-            font,
-            s[2],
-            y + Math.round(lh * 0.75),
-            l[0] === 'h2' && j === ws.length - 1 ? y + lh : 0
-          ]);
+        const lh = s[3] || Math.round(s[0] * 1.5);
+        const ws = l[0] === 'gap' ? [''] : wrap(l[1], font, maxW);
+        if (l[0] === 'h2') y += 24;
+        if (l[0] === 'p' || l[0] === 'n' || l[0] === 'b') y += 14;
+
+        const isPill = l[0] === 'p' || l[0] === 'n' || l[0] === 'b';
+        const startY = y;
+
+        ws.forEach(function (w: string) {
+          items.push({
+            type: l[0],
+            text: w,
+            font: font,
+            color: s[2],
+            x: isPill ? pad + 20 : pad,
+            y: y + Math.round(lh * 0.75),
+            underline: l[0] === 'h2' ? y + lh + 4 : 0
+          });
           y += lh;
         });
+
+        if (isPill) {
+          const pillH = y - startY + 12;
+          items.splice(items.length - ws.length, 0, {
+            type: 'pill_bg',
+            x: pad,
+            y: startY,
+            w: maxW,
+            h: pillH,
+            bg: l[0] === 'p' ? '#f0fdf4' : l[0] === 'n' ? '#fef2f2' : '#f8fafc',
+            border: l[0] === 'p' ? '#86efac' : l[0] === 'n' ? '#fca5a5' : '#cbd5e1'
+          });
+          y += 14;
+        }
       });
+
       const H = y + pad;
       cv.width = W;
       cv.height = H;
       x.fillStyle = '#ffffff';
       x.fillRect(0, 0, W, H);
+
       items.forEach(function (it) {
-        x.font = it[1];
-        x.fillStyle = it[2];
-        x.fillText(it[0], pad, it[3]);
-        if (it[4]) {
-          x.fillRect(pad, it[4] - 2, W - 2 * pad, 2);
+        if (it.type === 'pill_bg') {
+          drawPdfRoundRect(x, it.x, it.y, it.w, it.h, 10);
+          x.fillStyle = it.bg;
+          x.fill();
+          x.strokeStyle = it.border;
+          x.lineWidth = 2;
+          x.stroke();
+          return;
+        }
+        x.font = it.font;
+        x.fillStyle = it.color;
+        x.fillText(it.text, it.x, it.y);
+        if (it.underline) {
+          x.fillStyle = '#2563eb';
+          x.fillRect(pad, it.underline, 120, 4);
         }
       });
+
       cv.toBlob(function (b) {
         cb(b, cv);
       }, 'image/png');
@@ -1513,30 +1583,286 @@ export default function App() {
     }
 
     function jpdf(cb: any) {
-      jpng(function (b: any, cv: any) {
-        if (!b) {
-          cb(null);
-          return;
+      try {
+        const lines = jlines();
+        const PW = 2480;
+        const PH = 3508;
+        const PAD_X = 140;
+        const PAD_Y = 140;
+        const MAX_W = PW - 2 * PAD_X;
+        const PAGE_BOTTOM = PH - PAD_Y - 40;
+
+        const testCv = document.createElement('canvas');
+        const tx = testCv.getContext('2d')!;
+        const F =
+          'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", "Kalpurush", "SolaimanLipi", sans-serif';
+
+        function wrapText(t: any, font: string, maxW: number) {
+          tx.font = font;
+          const paras = String(t == null ? '' : t).split('\n');
+          const out: string[] = [];
+          paras.forEach(function (para) {
+            if (!para) {
+              out.push('');
+              return;
+            }
+            const words = para.split(' ');
+            let cur = '';
+            words.forEach(function (w) {
+              const test = cur ? cur + ' ' + w : w;
+              if (tx.measureText(test).width > maxW && cur) {
+                out.push(cur);
+                cur = w;
+              } else {
+                cur = test;
+              }
+            });
+            if (cur) out.push(cur);
+          });
+          return out.length ? out : [''];
         }
-        const W = cv.width;
-        const PH = Math.round(W * 1.4142);
-        const n = Math.max(1, Math.ceil(cv.height / PH));
-        const pages: any[] = [];
-        for (let k = 0; k < n; k++) {
+
+        const items: any[] = [];
+        lines.forEach(function (l: any) {
+          const type = l[0];
+          const raw = l[1] || '';
+          if (type === 'gap') {
+            items.push({ type: 'gap', height: 22 });
+            return;
+          }
+          if (type === 'h1') {
+            const font = 'bold 54px ' + F;
+            const ws = wrapText(raw, font, MAX_W - 400);
+            const lh = 76;
+            items.push({
+              type: 'h1',
+              font: font,
+              color: '#0f172a',
+              lines: ws,
+              lineHeight: lh,
+              height: ws.length * lh + 26
+            });
+            return;
+          }
+          if (type === 'h2') {
+            const font = 'bold 42px ' + F;
+            const ws = wrapText(raw, font, MAX_W - 40);
+            const lh = 62;
+            items.push({
+              type: 'h2',
+              font: font,
+              color: '#0f172a',
+              lines: ws,
+              lineHeight: lh,
+              height: ws.length * lh + 40
+            });
+            return;
+          }
+          if (type === 'p' || type === 'n' || type === 'b') {
+            const font = 'bold 34px ' + F;
+            const ws = wrapText(raw, font, MAX_W - 60);
+            const lh = 52;
+            const pillColor =
+              type === 'p'
+                ? { bg: '#f0fdf4', border: '#86efac', text: '#15803d' }
+                : type === 'n'
+                ? { bg: '#fef2f2', border: '#fca5a5', text: '#b91c1c' }
+                : { bg: '#f8fafc', border: '#cbd5e1', text: '#1e293b' };
+            items.push({
+              type: type,
+              font: font,
+              color: pillColor.text,
+              pillColor: pillColor,
+              lines: ws,
+              lineHeight: lh,
+              height: ws.length * lh + 34
+            });
+            return;
+          }
+          // Default text 't'
+          const font = '30px ' + F;
+          const ws = wrapText(raw, font, MAX_W - 20);
+          const lh = 46;
+          items.push({
+            type: 't',
+            font: font,
+            color: '#334155',
+            lines: ws,
+            lineHeight: lh,
+            height: ws.length * lh + 4
+          });
+        });
+
+        // Group into pages with smart break
+        const pageGroups: any[][] = [[]];
+        let curPageY = PAD_Y;
+        let curP = 0;
+
+        items.forEach(function (it) {
+          const isDayHeader = it.type === 'p' || it.type === 'n' || it.type === 'b';
+          const isH2 = it.type === 'h2';
+          const spaceNeeded = isDayHeader || isH2 ? it.height + 150 : it.height;
+
+          if (curPageY + spaceNeeded > PAGE_BOTTOM && pageGroups[curP].length > 0) {
+            curP++;
+            pageGroups[curP] = [];
+            curPageY = 200;
+          }
+          pageGroups[curP].push(it);
+          curPageY += it.height;
+        });
+
+        const totalPages = pageGroups.length;
+        const pdfPages: any[] = [];
+
+        pageGroups.forEach(function (pageItems, pageIdx) {
+          const pageNum = pageIdx + 1;
           const pc = document.createElement('canvas');
-          pc.width = W;
+          pc.width = PW;
           pc.height = PH;
-          const x = pc.getContext('2d')!;
-          x.fillStyle = '#fff';
-          x.fillRect(0, 0, W, PH);
-          x.drawImage(cv, 0, k * PH, W, PH, 0, 0, W, PH);
-          const bin = atob(pc.toDataURL('image/jpeg', 0.9).split(',')[1]);
+          const ctx = pc.getContext('2d')!;
+
+          // Pure white crisp background
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, PW, PH);
+
+          // Top Header on pages 2+
+          if (pageNum > 1) {
+            ctx.font = 'bold 26px ' + F;
+            ctx.fillStyle = '#64748b';
+            ctx.fillText('MAHFUJ TRADING JOURNAL · ' + (S.nm || 'Monthly Log'), PAD_X, 115);
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(PAD_X, 140);
+            ctx.lineTo(PW - PAD_X, 140);
+            ctx.stroke();
+          }
+
+          // Footer on every page
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(PAD_X, PH - 140);
+          ctx.lineTo(PW - PAD_X, PH - 140);
+          ctx.stroke();
+
+          ctx.font = '24px ' + F;
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillText("Mahfuj's Trading Log · Ultra-HD 300 DPI Export", PAD_X, PH - 92);
+
+          ctx.font = 'bold 26px ' + F;
+          ctx.fillStyle = '#475569';
+          const pStr = 'Page ' + pageNum + ' of ' + totalPages;
+          const psw = ctx.measureText(pStr).width;
+          ctx.fillText(pStr, PW - PAD_X - psw, PH - 92);
+
+          // Content rendering
+          let y = pageNum === 1 ? PAD_Y : 200;
+
+          pageItems.forEach(function (it: any) {
+            if (it.type === 'gap') {
+              y += it.height;
+              return;
+            }
+
+            if (it.type === 'h1') {
+              ctx.font = it.font;
+              ctx.fillStyle = it.color;
+              let textY = y + Math.round(it.lineHeight * 0.75);
+              it.lines.forEach(function (w: string) {
+                ctx.fillText(w, PAD_X, textY);
+                textY += it.lineHeight;
+              });
+
+              // HD 300 DPI badge
+              const badgeText = '✨ ULTRA-HD · 300 DPI';
+              ctx.font = 'bold 22px ' + F;
+              const bw = ctx.measureText(badgeText).width + 36;
+              const bx = PW - PAD_X - bw;
+              const by = y + 10;
+              drawPdfRoundRect(ctx, bx, by, bw, 44, 22);
+              ctx.fillStyle = '#eff6ff';
+              ctx.fill();
+              ctx.strokeStyle = '#93c5fd';
+              ctx.lineWidth = 2;
+              ctx.stroke();
+              ctx.fillStyle = '#1d4ed8';
+              ctx.fillText(badgeText, bx + 18, by + 30);
+
+              y += it.height;
+              return;
+            }
+
+            if (it.type === 'h2') {
+              y += 18;
+              // Modern accent marker bar
+              ctx.fillStyle = '#2563eb';
+              ctx.fillRect(PAD_X, y + 6, 8, it.lineHeight - 12);
+
+              ctx.font = it.font;
+              ctx.fillStyle = it.color;
+              let textY = y + Math.round(it.lineHeight * 0.75);
+              it.lines.forEach(function (w: string) {
+                ctx.fillText(w, PAD_X + 24, textY);
+                textY += it.lineHeight;
+              });
+
+              // Subtle bottom line
+              ctx.fillStyle = '#e2e8f0';
+              ctx.fillRect(PAD_X + 24, y + it.lineHeight + 6, MAX_W - 24, 2);
+
+              y += it.height;
+              return;
+            }
+
+            if (it.pillColor) {
+              y += 10;
+              const boxTop = y;
+              const boxHeight = it.height - 12;
+
+              drawPdfRoundRect(ctx, PAD_X, boxTop, MAX_W, boxHeight, 12);
+              ctx.fillStyle = it.pillColor.bg;
+              ctx.fill();
+              ctx.strokeStyle = it.pillColor.border;
+              ctx.lineWidth = 2;
+              ctx.stroke();
+
+              ctx.font = it.font;
+              ctx.fillStyle = it.pillColor.text;
+              let textY = boxTop + 38;
+              it.lines.forEach(function (w: string) {
+                ctx.fillText(w, PAD_X + 24, textY);
+                textY += it.lineHeight;
+              });
+
+              y += it.height;
+              return;
+            }
+
+            // Regular text
+            ctx.font = it.font;
+            ctx.fillStyle = it.color;
+            let textY = y + Math.round(it.lineHeight * 0.75);
+            it.lines.forEach(function (w: string) {
+              ctx.fillText(w, PAD_X, textY);
+              textY += it.lineHeight;
+            });
+            y += it.height;
+          });
+
+          // Ultra high quality JPEG (0.96) for razor-sharp vector-like text
+          const bin = atob(pc.toDataURL('image/jpeg', 0.96).split(',')[1]);
           const u = new Uint8Array(bin.length);
           for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
-          pages.push({ bytes: u, w: W, h: PH });
-        }
-        cb(mkpdf(pages));
-      });
+          pdfPages.push({ bytes: u, w: PW, h: PH });
+        });
+
+        cb(mkpdf(pdfPages));
+      } catch (err) {
+        console.error('Error generating HD PDF:', err);
+        cb(null);
+      }
     }
 
     function ov(h: string) {
@@ -1588,7 +1914,7 @@ export default function App() {
             dl2!.textContent = lab;
           }, ms);
         }
-        dl2.textContent = 'Making PDF…';
+        dl2.textContent = 'Making HD PDF…';
         jpdf(function (blob: any) {
           if (!blob) {
             msg('Could not make PDF', 3000);
@@ -1602,7 +1928,7 @@ export default function App() {
           setTimeout(function () {
             a.remove();
           }, 500);
-          msg('Saved ✓');
+          msg('Saved HD PDF ✓');
         });
       });
     }
@@ -1619,7 +1945,7 @@ export default function App() {
             dl!.textContent = lab;
           }, ms);
         }
-        dl.textContent = 'Making image…';
+        dl.textContent = 'Making HD image…';
         jpng(function (blob: any) {
           if (!blob) {
             msg('Could not make image', 3000);
@@ -2860,10 +3186,10 @@ export default function App() {
 
       <div id="dls" style={{ marginBottom: '10px' }}>
         <button className="reset" id="dl2" style={{ margin: '0 0 6px', width: '100%' }}>
-          ⬇ Download PDF (all data)
+          ⬇ Download HD PDF (300 DPI · সব ডেটা)
         </button>
         <button className="reset" id="dl" style={{ margin: 0, width: '100%' }}>
-          ⬇ Download image (PNG)
+          ⬇ Download HD Image (PNG)
         </button>
       </div>
 
