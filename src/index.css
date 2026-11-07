@@ -105,8 +105,19 @@ input:focus,select:focus{outline-color:#00486d}
 .msbadge{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--in);color:var(--mut);white-space:nowrap;border:1px solid var(--bd)}
 .msbadge.on{background:var(--gn);color:#fff;border-color:var(--gn)}
 .msnote{color:var(--mut);font-size:12px;margin-top:10px}
-.strip{grid-template-columns:repeat(5,minmax(0,1fr))}
-.dot{aspect-ratio:auto;height:78px;width:100%;min-width:0;overflow:hidden}
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important}
+.dot{aspect-ratio:auto!important;height:62px!important;width:100%!important;min-width:0!important;overflow:hidden;border-radius:10px!important;border:1px solid var(--bd)!important;background:var(--in)!important;color:var(--mut)!important;font:inherit;font-weight:800;font-size:13px!important;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px 1px!important;cursor:pointer;transition:transform .15s ease}
+.dot:hover{transform:translateY(-1px);border-color:#38bdf8!important}
+.dot:active{transform:scale(0.96)}
+.dot small{font-size:8.5px!important;font-weight:700!important;opacity:.85;line-height:1}
+.dot b{font-size:12.5px!important;font-weight:800!important;line-height:1.2}
+.dot .amt{font-size:8.5px!important;font-weight:700!important;opacity:1;min-height:11px;line-height:1}
+.dot.w{background:var(--gn)!important;color:#fff!important;border-color:var(--gn)!important}
+.dot.l{background:var(--rd)!important;color:#fff!important;border-color:var(--rd)!important}
+.dot.z{background:#00486d!important;color:#fff!important;border-color:#00486d!important}
+.dot.wknd{border-style:dashed!important;opacity:.88}
+.cal-nav-btn{background:var(--in);color:var(--tx);border:1px solid var(--bd);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:all .15s ease}
+.cal-nav-btn:hover{background:var(--card);border-color:#38bdf8;color:#38bdf8}
 
 /* moving border light */
 @property --a{syntax:"<angle>";initial-value:0deg;inherits:true}

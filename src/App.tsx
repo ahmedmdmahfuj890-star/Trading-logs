@@ -7,49 +7,110 @@ export default function App() {
     let ST: { c: number; m: any[] } = { c: 0, m: [] };
     let S: any;
 
-    function blank() {
+    const EN_MONTHS = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const BN_MONTHS = [
+      'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+      'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
+    ];
+    const EN_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const BN_DAYS = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+
+    function getDaysInMonth(year: number, monthIndex: number): number {
+      return new Date(year, monthIndex + 1, 0).getDate();
+    }
+
+    function blankDay() {
+      return {
+        r: [0, 0, 0, 0, 0, 0],
+        t: [
+          { p: '', d: '', ap: '', pl: '', pp: '' },
+          { p: '', d: '', ap: '', pl: '', pp: '' },
+          { p: '', d: '', ap: '', pl: '', pp: '' }
+        ],
+        m: '',
+        n: '',
+        c: [0, 0, 0, 0],
+        ce: 0,
+        mk: '',
+        nf: ''
+      };
+    }
+
+    function blank(year?: number, monthIndex?: number) {
+      const now = new Date();
+      const y = typeof year === 'number' ? year : now.getFullYear();
+      const m = typeof monthIndex === 'number' && monthIndex >= 0 && monthIndex <= 11 ? monthIndex : now.getMonth();
+      const totalDays = getDaysInMonth(y, m);
       const d = [];
-      for (let i = 0; i < 20; i++) {
-        d.push({
-          r: [0, 0, 0, 0, 0, 0],
-          t: [
-            { p: '', d: '', ap: '', pl: '', pp: '' },
-            { p: '', d: '', ap: '', pl: '', pp: '' },
-            { p: '', d: '', ap: '', pl: '', pp: '' }
-          ],
-          m: '',
-          n: '',
-          c: [0, 0, 0, 0],
-          ce: 0,
-          mk: '',
-          nf: ''
-        });
+      for (let i = 0; i < totalDays; i++) {
+        d.push(blankDay());
       }
-      return { s: 1000, l: 2, dt: '', mt: '', nm: 'Month 1', d, lot: {}, snap: {}, wm: ['', '', '', ''] };
+      const title = `${EN_MONTHS[m]} ${y}`;
+      const weeksCount = Math.ceil(totalDays / 7);
+      const wm = new Array(weeksCount).fill('');
+      return {
+        year: y,
+        month: m,
+        days: totalDays,
+        s: 10000,
+        l: 0.8,
+        dt: '',
+        mt: '',
+        nm: title,
+        d,
+        lot: {},
+        snap: {},
+        wm
+      };
     }
 
     function cleanMonth(m: any, i: number) {
-      if (!m || typeof m !== 'object' || !Array.isArray(m.d)) throw new Error('Invalid month');
-      const b = blank();
+      if (!m || typeof m !== 'object') throw new Error('Invalid month');
+      const now = new Date();
+      let y = typeof m.year === 'number' ? m.year : now.getFullYear();
+      let monthIdx = typeof m.month === 'number' && m.month >= 0 && m.month <= 11 ? m.month : now.getMonth();
+
+      if (typeof m.nm === 'string') {
+        EN_MONTHS.forEach((name, idx) => {
+          if (m.nm.includes(name)) monthIdx = idx;
+        });
+        const matchYear = m.nm.match(/\b(202\d|203\d)\b/);
+        if (matchYear) y = parseInt(matchYear[1], 10);
+      }
+
+      const totalDays = getDaysInMonth(y, monthIdx);
+      const b = blank(y, monthIdx);
+      b.year = y;
+      b.month = monthIdx;
+      b.days = totalDays;
       b.s = m.s == null ? b.s : m.s;
       b.l = m.l == null ? b.l : m.l;
       b.dt = m.dt == null ? b.dt : m.dt;
       b.mt = m.mt == null ? b.mt : m.mt;
-      b.nm = String(m.nm || 'Month ' + (i + 1));
+      b.nm = String(m.nm || `${EN_MONTHS[monthIdx]} ${y}`);
       b.lot = m.lot && typeof m.lot === 'object' ? m.lot : {};
       b.snap = m.snap && typeof m.snap === 'object' ? m.snap : {};
-      b.wm = Array.isArray(m.wm) ? m.wm : ['', '', '', ''];
-      b.d = b.d.map(function (day: any, j: number) {
-        const x = m.d[j] && typeof m.d[j] === 'object' ? m.d[j] : {};
-        const d0 = { ...day };
+
+      const weeksCount = Math.ceil(totalDays / 7);
+      b.wm = Array.isArray(m.wm) ? m.wm.slice(0, weeksCount) : [];
+      while (b.wm.length < weeksCount) b.wm.push('');
+
+      b.d = [];
+      const existingDays = Array.isArray(m.d) ? m.d : [];
+      for (let j = 0; j < totalDays; j++) {
+        const x = existingDays[j] && typeof existingDays[j] === 'object' ? existingDays[j] : {};
+        const d0 = blankDay();
         d0.r = Array.isArray(x.r)
-          ? d0.r.map((_: any, k: number) => {
+          ? [0, 1, 2, 3, 4, 5].map((k) => {
               const v = Number(x.r[k]);
               return v === 1 || v === 2 ? v : 0;
             })
-          : d0.r;
+          : [0, 0, 0, 0, 0, 0];
         d0.c = Array.isArray(x.c)
-          ? [0, 1, 2, 3].map(k => {
+          ? [0, 1, 2, 3].map((k) => {
               const v = Number(x.c[k]);
               return v === 1 || v === 2 ? v : 0;
             })
@@ -59,7 +120,7 @@ export default function App() {
         d0.n = x.n == null ? '' : String(x.n);
         d0.mk = x.mk == null ? '' : String(x.mk);
         d0.nf = x.nf == null ? '' : String(x.nf);
-        d0.t = d0.t.map((t: any, k: number) => {
+        d0.t = [0, 1, 2].map((k) => {
           const z = Array.isArray(x.t) ? x.t[k] : null;
           const zObj = z && typeof z === 'object' ? z : {};
           return {
@@ -70,8 +131,8 @@ export default function App() {
             pp: zObj.pp == null ? '' : String(zObj.pp)
           };
         });
-        return d0;
-      });
+        b.d.push(d0);
+      }
       return b;
     }
 
@@ -96,7 +157,7 @@ export default function App() {
       if (!ST.m.length && old) {
         try {
           const p = JSON.parse(old);
-          if (p && Array.isArray(p.d) && p.d.length === 20) {
+          if (p && Array.isArray(p.d)) {
             p.nm = 'Month 1';
             ST = cleanState({ c: 0, m: [p] });
           }
@@ -164,14 +225,19 @@ export default function App() {
       let y = 0;
       let yn = 0;
       const res: any[] = [];
-      const wk = [0, 1, 2, 3].map(() => ({ t: 0, w: 0, n: 0, p: 0 }));
+      const totalDays = S.d ? S.d.length : 30;
+      const weeksCount = Math.ceil(totalDays / 7);
+      const wk: any[] = [];
+      for (let w = 0; w < weeksCount; w++) {
+        wk.push({ t: 0, w: 0, n: 0, p: 0 });
+      }
 
       S.d.forEach(function (day: any, i: number) {
         let n = 0;
         let any = false;
         let np = 0;
         let anyp = false;
-        const k = Math.floor(i / 5);
+        const k = Math.min(weeksCount - 1, Math.floor(i / 7));
 
         day.t.forEach(function (t: any) {
           const v = num(t.pl);
@@ -350,23 +416,55 @@ export default function App() {
     }
 
     function renderStrip(c: any) {
-      let s = '<label>Tap a day to jump to it</label><div class="strip">';
+      const y = S.year != null ? S.year : new Date().getFullYear();
+      const m = S.month != null ? S.month : new Date().getMonth();
+      const totalDays = S.d ? S.d.length : getDaysInMonth(y, m);
+      const monthNameEn = EN_MONTHS[m] || 'Month';
+      const monthNameBn = BN_MONTHS[m] || '';
+
+      let s =
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+        '<div>' +
+        '<label style="margin:0;font-size:13.5px;font-weight:800;color:#fff">📅 ' +
+        monthNameEn +
+        ' ' +
+        y +
+        (monthNameBn ? ' (' + monthNameBn + ')' : '') +
+        '</label>' +
+        '<small style="color:#94a3b8;display:block;font-size:11px;margin-top:2px">টোটাল ' +
+        totalDays +
+        ' দিন · যেকোনো দিনে ক্লিক করে জার্নাল এন্ট্রিতে যান</small>' +
+        '</div>' +
+        '<span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(56,189,248,.15);color:#38bdf8;border:1px solid rgba(56,189,248,.35)">' +
+        totalDays +
+        ' Days</span>' +
+        '</div>' +
+        '<div class="strip">';
+
       c.res.forEach(function (r: any, i: number) {
+        const dNum = i + 1;
+        const dObj = new Date(y, m, dNum);
+        const dayOfWeek = EN_DAYS[dObj.getDay()];
+        const isWeekend = dObj.getDay() === 0 || dObj.getDay() === 6;
+
         s +=
           '<button class="dot ' +
           (r.has ? (r.tone > 0 ? 'w' : r.tone < 0 ? 'l' : 'z') : '') +
+          (isWeekend ? ' wknd' : '') +
           '" data-i="' +
           i +
           '"><small>' +
-          ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][i % 5] +
-          '</small>' +
-          (i + 1) +
+          dayOfWeek +
+          '</small><b>' +
+          dNum +
+          '</b>' +
           '<small class="amt">' +
           (r.any ? amt(r.net) : '') +
           '</small>' +
           (r.anyp ? '<small class="amt">' + fp(r.pips) + 'p</small>' : '') +
           '</button>';
       });
+
       const el = document.getElementById('strip');
       if (el) el.innerHTML = s + '</div>';
     }
@@ -468,10 +566,16 @@ export default function App() {
       let h =
         '<tr><th>Week</th><th>Trades</th><th>Wins</th><th>Win %</th><th>Net P/L</th><th>Pips</th></tr>';
       c.wk.forEach(function (x: any, i: number) {
+        const startDay = i * 7 + 1;
+        const endDay = Math.min(S.d.length, (i + 1) * 7);
         h +=
           '<tr><td>Week ' +
           (i + 1) +
-          '</td><td>' +
+          ' <small style="color:var(--mut)">(' +
+          startDay +
+          '–' +
+          endDay +
+          ')</small></td><td>' +
           x.t +
           '</td><td>' +
           x.w +
@@ -567,9 +671,32 @@ export default function App() {
     function build() {
       const box = document.getElementById('days');
       if (!box) return;
+      const totalDays = S.d ? S.d.length : 30;
+      const y = S.year != null ? S.year : new Date().getFullYear();
+      const m = S.month != null ? S.month : new Date().getMonth();
+
       let h = '';
-      for (let i = 0; i < 20; i++) {
-        if (i % 5 === 0) h += '<h2>Week ' + (i / 5 + 1) + '</h2>';
+      for (let i = 0; i < totalDays; i++) {
+        const dNum = i + 1;
+        const dObj = new Date(y, m, dNum);
+        const dayOfWeek = EN_DAYS[dObj.getDay()];
+        const bnDayOfWeek = BN_DAYS[dObj.getDay()];
+
+        if (i % 7 === 0) {
+          const wkNum = Math.floor(i / 7) + 1;
+          const endDay = Math.min(totalDays, i + 7);
+          h +=
+            '<h2 style="display:flex;justify-content:space-between;align-items:center;margin:24px 0 10px">' +
+            '<span>Week ' +
+            wkNum +
+            '</span>' +
+            '<span style="font-size:12px;font-weight:600;color:var(--mut)">Day ' +
+            dNum +
+            ' – ' +
+            endDay +
+            '</span></h2>';
+        }
+
         h +=
           '<div class="card" id="card' +
           i +
@@ -580,9 +707,17 @@ export default function App() {
           '">' +
           emoI(S.d[i].ce) +
           ' Control your emotion</button><div class="head"><b>' +
-          ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][i % 5] +
+          dayOfWeek +
+          ' (' +
+          bnDayOfWeek +
+          ') · ' +
+          dNum +
+          ' ' +
+          EN_MONTHS[m] +
+          ' ' +
+          y +
           ' · Day ' +
-          (i + 1) +
+          dNum +
           '</b><span class="net" id="net' +
           i +
           '">–</span></div>';
@@ -701,14 +836,24 @@ export default function App() {
       const b = document.getElementById('mist');
       if (!b) return;
       let h = '';
-      if (!S.wm) S.wm = ['', '', '', ''];
-      for (let w = 0; w < 4; w++)
+      const totalDays = S.d ? S.d.length : 30;
+      const weeksCount = Math.ceil(totalDays / 7);
+      if (!S.wm || !Array.isArray(S.wm)) S.wm = [];
+      while (S.wm.length < weeksCount) S.wm.push('');
+      for (let w = 0; w < weeksCount; w++) {
+        const startDay = w * 7 + 1;
+        const endDay = Math.min(totalDays, (w + 1) * 7);
         h +=
           '<label>Week ' +
           (w + 1) +
-          ' – biggest mistake</label><input data-w="' +
+          ' (Day ' +
+          startDay +
+          '–' +
+          endDay +
+          ') – biggest mistake</label><input data-w="' +
           w +
           '" type="text" placeholder="Write your biggest mistake" style="margin-bottom:8px">';
+      }
       b.innerHTML = h;
       b.querySelectorAll('input').forEach(function (el: any) {
         el.value = S.wm[+el.dataset.w] || '';
@@ -813,16 +958,71 @@ export default function App() {
       return false;
     }
 
-    function fillSel() {
-      if (!msel) return;
-      msel.innerHTML = '';
-      ST.m.forEach(function (m: any, i: number) {
-        const o = document.createElement('option');
-        o.value = String(i);
-        o.textContent = m.nm || 'Month ' + (i + 1);
-        msel.appendChild(o);
+    function switchYearMonth(targetYear: number, targetMonth: number) {
+      let idx = ST.m.findIndex(function (mItem: any) {
+        return mItem.year === targetYear && mItem.month === targetMonth;
       });
-      msel.value = String(ST.c);
+      if (idx < 0) {
+        const newM = blank(targetYear, targetMonth);
+        newM.s = S.s;
+        newM.l = S.l;
+        newM.dt = S.dt;
+        newM.mt = S.mt;
+        newM.lot = { ...S.lot };
+        ST.m.push(newM);
+        idx = ST.m.length - 1;
+      }
+      ST.c = idx;
+      load();
+      save();
+    }
+
+    function fillSel() {
+      const curTitle = document.getElementById('cur_month_title');
+      const y = S.year != null ? S.year : new Date().getFullYear();
+      const m = S.month != null ? S.month : new Date().getMonth();
+      const totalDays = S.d ? S.d.length : getDaysInMonth(y, m);
+
+      if (curTitle) {
+        curTitle.textContent = EN_MONTHS[m] + ' ' + y + ' (' + totalDays + ' দিন)';
+      }
+
+      const mMonthSel = document.getElementById('m_month_select') as HTMLSelectElement;
+      if (mMonthSel) {
+        mMonthSel.innerHTML = '';
+        EN_MONTHS.forEach(function (name, idx) {
+          const opt = document.createElement('option');
+          opt.value = String(idx);
+          opt.textContent = name + ' (' + BN_MONTHS[idx] + ')';
+          mMonthSel.appendChild(opt);
+        });
+        mMonthSel.value = String(m);
+      }
+
+      const mYearSel = document.getElementById('m_year_select') as HTMLSelectElement;
+      if (mYearSel) {
+        mYearSel.innerHTML = '';
+        for (let yr = 2024; yr <= 2032; yr++) {
+          const opt = document.createElement('option');
+          opt.value = String(yr);
+          opt.textContent = String(yr);
+          mYearSel.appendChild(opt);
+        }
+        mYearSel.value = String(y);
+      }
+
+      if (msel) {
+        msel.innerHTML = '';
+        ST.m.forEach(function (monthItem: any, i: number) {
+          const o = document.createElement('option');
+          o.value = String(i);
+          const itemY = monthItem.year != null ? monthItem.year : y;
+          const itemM = monthItem.month != null ? monthItem.month : m;
+          o.textContent = monthItem.nm || (EN_MONTHS[itemM] + ' ' + itemY);
+          msel.appendChild(o);
+        });
+        msel.value = String(ST.c);
+      }
     }
 
     const md = document.getElementById('maxd') as HTMLInputElement;
@@ -837,7 +1037,9 @@ export default function App() {
 
     function load() {
       S = ST.m[ST.c];
-      if (!S.nm) S.nm = 'Month ' + (ST.c + 1);
+      const y = S.year != null ? S.year : new Date().getFullYear();
+      const m = S.month != null ? S.month : new Date().getMonth();
+      if (!S.nm) S.nm = EN_MONTHS[m] + ' ' + y;
       if (st) st.value = S.s;
       if (ml) ml.value = S.l;
       if (mn) mn.value = S.nm;
@@ -876,17 +1078,69 @@ export default function App() {
       });
     }
 
+    const mPrevBtn = document.getElementById('m_prev_btn');
+    if (mPrevBtn) {
+      mPrevBtn.addEventListener('click', function () {
+        let prevY = S.year != null ? S.year : new Date().getFullYear();
+        let prevM = (S.month != null ? S.month : new Date().getMonth()) - 1;
+        if (prevM < 0) {
+          prevM = 11;
+          prevY--;
+        }
+        switchYearMonth(prevY, prevM);
+      });
+    }
+
+    const mNextBtn = document.getElementById('m_next_btn');
+    if (mNextBtn) {
+      mNextBtn.addEventListener('click', function () {
+        let nextY = S.year != null ? S.year : new Date().getFullYear();
+        let nextM = (S.month != null ? S.month : new Date().getMonth()) + 1;
+        if (nextM > 11) {
+          nextM = 0;
+          nextY++;
+        }
+        switchYearMonth(nextY, nextM);
+      });
+    }
+
+    const mTodayBtn = document.getElementById('m_today_btn');
+    if (mTodayBtn) {
+      mTodayBtn.addEventListener('click', function () {
+        const now = new Date();
+        switchYearMonth(now.getFullYear(), now.getMonth());
+      });
+    }
+
+    const mMonthSel = document.getElementById('m_month_select') as HTMLSelectElement;
+    if (mMonthSel) {
+      mMonthSel.addEventListener('change', function () {
+        const y = S.year != null ? S.year : new Date().getFullYear();
+        switchYearMonth(y, +mMonthSel.value);
+      });
+    }
+
+    const mYearSel = document.getElementById('m_year_select') as HTMLSelectElement;
+    if (mYearSel) {
+      mYearSel.addEventListener('change', function () {
+        const m = S.month != null ? S.month : new Date().getMonth();
+        switchYearMonth(+mYearSel.value, m);
+      });
+    }
+
     const newm = document.getElementById('newm');
     if (newm) {
       newm.addEventListener('click', function () {
-        const b = 0;
-        if (!ask(newm, 'Tap again: new month starts at $0')) return;
-        const n = blank();
-        n.s = b;
+        const y = S.year != null ? S.year : new Date().getFullYear();
+        const m = S.month != null ? S.month : new Date().getMonth();
+        if (!ask(newm, 'Tap again: new month copy')) return;
+        const n = blank(y, m);
+        n.s = S.s;
         n.l = S.l;
         n.dt = S.dt;
         n.mt = S.mt;
-        n.nm = 'Month ' + (ST.m.length + 1);
+        n.lot = { ...S.lot };
+        n.nm = `${EN_MONTHS[m]} ${y} (Copy ${ST.m.length + 1})`;
         ST.m.push(n);
         ST.c = ST.m.length - 1;
         load();
@@ -1083,9 +1337,13 @@ export default function App() {
         if (!(r.any || rl.length || ck || ckx || tl.length || m || d.mk || d.nf || d.n || d.ce))
           return;
         any = true;
+        const pdfY = S.year != null ? S.year : new Date().getFullYear();
+        const pdfM = S.month != null ? S.month : new Date().getMonth();
+        const pdfDObj = new Date(pdfY, pdfM, i + 1);
+        const dayOfWeek = EN_DAYS[pdfDObj.getDay()];
         L.push([
           r.has ? (r.tone < 0 ? 'n' : 'p') : 'b',
-          W[i % 5] +
+          dayOfWeek +
             ' · Day ' +
             (i + 1) +
             (r.any
@@ -2547,22 +2805,57 @@ export default function App() {
         <span id="ty">MAHFUJ TRADING LOG</span>
       </h1>
 
-      <div className="card two" style={{ gridTemplateColumns: '2fr 1fr' }}>
-        <div>
-          <label>Month</label>
-          <select id="msel"></select>
+      <div className="card" style={{ marginBottom: '14px', padding: '16px 14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+          <div>
+            <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--mut)', fontWeight: 700 }}>
+              📅 ক্যালেন্ডার ও ট্রেডিং মাস
+            </div>
+            <div id="cur_month_title" style={{ fontSize: '17px', fontWeight: 800, color: '#fff', marginTop: '2px' }}>
+              November 2026 (30 দিন)
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <button type="button" className="cal-nav-btn" id="m_prev_btn" title="পূর্ববর্তী মাস">
+              ◀
+            </button>
+            <button type="button" className="cal-nav-btn" id="m_today_btn" style={{ fontSize: '11.5px', padding: '0 10px', width: 'auto', fontWeight: 600 }}>
+              📅 বর্তমান মাস
+            </button>
+            <button type="button" className="cal-nav-btn" id="m_next_btn" title="পরবর্তী মাস">
+              ▶
+            </button>
+          </div>
         </div>
-        <div>
-          <label>&nbsp;</label>
-          <button className="reset" id="newm" style={{ margin: 0, width: '100%' }}>
-            + New month
-          </button>
-        </div>
-      </div>
 
-      <div className="card">
-        <label>Month name (rename any time)</label>
-        <input id="mname" type="text" />
+        <div className="two" style={{ marginBottom: '10px' }}>
+          <div>
+            <label style={{ fontSize: '11.5px' }}>মাস (Month)</label>
+            <select id="m_month_select" style={{ fontSize: '13px' }}></select>
+          </div>
+          <div>
+            <label style={{ fontSize: '11.5px' }}>বছর (Year)</label>
+            <select id="m_year_select" style={{ fontSize: '13px' }}></select>
+          </div>
+        </div>
+
+        <div className="two" style={{ gridTemplateColumns: '2fr 1fr', marginBottom: '10px' }}>
+          <div>
+            <label style={{ fontSize: '11.5px' }}>সেভ করা মাসের ট্যাব</label>
+            <select id="msel" style={{ fontSize: '13px' }}></select>
+          </div>
+          <div>
+            <label style={{ fontSize: '11.5px' }}>&nbsp;</label>
+            <button className="reset" id="newm" style={{ margin: 0, width: '100%', height: '40px', fontSize: '12px', padding: '0 8px' }}>
+              + নতুন মাস
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label style={{ fontSize: '11.5px' }}>মাসের নাম / নোট (কাস্টমাইজ করতে পারেন)</label>
+          <input id="mname" type="text" placeholder="যেমন: November 2026 - Phase 1" style={{ fontSize: '13px' }} />
+        </div>
       </div>
 
       <div id="dls" style={{ marginBottom: '10px' }}>
