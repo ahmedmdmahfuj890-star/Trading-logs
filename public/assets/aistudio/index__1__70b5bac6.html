@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
+<title>Mahfuj’s Trading Log</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef1f6;--card:#fff;--in:#f4f6fa;--tx:#0f172a;--mut:#64748b;--bd:#e2e8f0;--ink:#0b1f3a;--gold:#e0a526;--gn:#047857;--rd:#be123c;--gnbg:#ecfdf5;--gnbd:#a7f3d0;--rdbg:#fff1f2;--rdbd:#fecdd3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1120;--card:#111b2f;--in:#0d1627;--tx:#e8edf6;--mut:#8b98b0;--bd:#1f2c46;--ink:#1a2a4a;--gn:#34d399;--rd:#fb7185;--gnbg:#07281f;--gnbd:#0f5a43;--rdbg:#34101a;--rdbd:#6b1d2e}}
+:root[data-theme="dark"]{--bg:#0a1120;--card:#111b2f;--in:#0d1627;--tx:#e8edf6;--mut:#8b98b0;--bd:#1f2c46;--ink:#1a2a4a;--gn:#34d399;--rd:#fb7185;--gnbg:#07281f;--gnbd:#0f5a43;--rdbg:#34101a;--rdbd:#6b1d2e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0 auto;background:radial-gradient(900px 260px at 50% -80px,rgba(224,165,38,.18),transparent) no-repeat,var(--bg);color:var(--tx);font:15px/1.45 "Plus Jakarta Sans","Noto Sans Bengali",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:16px;max-width:560px;-webkit-font-smoothing:antialiased}
+h1{font-size:27px;font-weight:800;letter-spacing:-.02em;margin:6px 0 4px}
+h1::after{content:"";display:block;width:46px;height:4px;background:var(--gold);border-radius:2px;margin-top:9px}
+h2{font-size:18px;font-weight:800;letter-spacing:-.01em;margin:26px 0 10px;color:var(--tx)}
+.sub{color:var(--mut);font-size:12.5px;line-height:1.5;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:12px;border-left-width:4px}
+.card.win{background:var(--gnbg);border-color:var(--gnbd);border-left-color:var(--gn)}
+.card.loss,.flag{background:var(--rdbg);border-color:var(--rdbd);border-left-color:var(--rd)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px 14px}
+.stat b{display:block;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}.stat span{font-size:12px;font-weight:600;color:var(--mut)}
+#stats .stat:first-child{grid-column:1/-1;background:var(--ink);color:#fff;border:0;border-top:3px solid var(--gold);padding:18px 18px 16px}
+#stats .stat:first-child span{color:#9fb2d4}#stats .stat:first-child b{font-size:36px;letter-spacing:-.03em}
+input,select{font:inherit;font-size:15px;color:var(--tx);background:var(--in);border:1px solid var(--bd);border-radius:12px;padding:10px;width:100%;min-width:0;min-height:44px}
+input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:transparent}
+label{font-size:12px;font-weight:600;color:var(--mut);display:block;margin-bottom:5px}
+.row{display:grid;gap:8px;margin-bottom:10px}
+.trade{grid-template-columns:2fr 1.1fr 1fr}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:4px 0 8px}
+.head b{font-size:17px;font-weight:800}.net{font-weight:800;font-variant-numeric:tabular-nums;font-size:14px}.pos{color:var(--gn)}.neg{color:var(--rd)}
+.dream{text-align:center;color:var(--mut);font-size:12px;font-weight:600;margin-bottom:8px}
+.emo{display:block;width:100%;font:inherit;font-weight:700;font-size:14px;cursor:pointer;background:transparent;color:var(--tx);border:1.5px dashed var(--gold);text-align:center;padding:11px;border-radius:14px;margin-bottom:10px}
+.emo.on{background:var(--gnbg);border:1.5px solid var(--gn);color:var(--gn)}
+.pre{background:var(--in);border-radius:14px;padding:4px 12px;margin:8px 0}
+.pre summary{font-size:13.5px;font-weight:600;color:var(--tx);padding:9px 0;cursor:pointer}.pre summary b{color:var(--mut)}
+.chk button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;color:var(--tx);font:inherit;font-size:14px;padding:9px 0}
+.chk i{width:22px;height:22px;border:2px solid var(--mut);border-radius:7px;flex:none;display:block;text-align:center;font-style:normal;font-size:14px;line-height:18px;color:#fff}
+.chk .on i{background:var(--gn);border-color:var(--gn)}.chk .on i::after{content:"\2713"}
+.pre .note{background:#fef3c7;color:#78350f;font-weight:700;font-size:12px;padding:8px 10px;border-radius:10px;margin:4px 0 8px}
+.rules.rl{display:block;margin:2px 0 6px}
+.rules.rl button{display:flex;width:100%;text-align:left;gap:6px;margin-bottom:6px;padding:11px 12px;font:inherit;font-size:14px;font-weight:500;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:12px}
+.rl button::after{content:"";margin-left:auto;font-weight:700}
+.rules .y{background:var(--gnbg)!important;border-color:var(--gn)!important}.rules .n{background:var(--rdbg)!important;border-color:var(--rd)!important}
+.rl .y::after{content:"\2713 Followed";color:var(--gn)}.rl .n::after{content:"\2717 Broken";color:var(--rd)}
+.stars{display:flex;gap:2px}.stars button{background:none;border:0;font-size:30px;line-height:1;padding:2px 3px;color:var(--bd)}.stars button.on{color:#f5b301}
+.warn{font-size:12.5px;font-weight:600;color:var(--rd);margin:4px 0 8px;display:none}
+table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}th,td{padding:9px 4px;text-align:right;border-bottom:1px solid var(--bd)}th:first-child,td:first-child{text-align:left}th{color:var(--mut);font-weight:600;font-size:12px}
+button.reset{font:inherit;font-weight:600;font-size:14px;margin-top:14px;background:var(--card);border:1px solid var(--bd);color:var(--tx);border-radius:14px;padding:12px 14px;cursor:pointer}
+#newm{background:var(--ink);color:#fff;border-color:var(--ink)}
+#dl2{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pill{display:inline-block;font-style:normal;font-weight:700;font-size:13px;padding:4px 11px;border-radius:99px;background:rgba(255,255,255,.12);margin-top:8px;color:#cbd5e8}.pill.up{color:#6ee7b7}.pill.dn{color:#fda4af}
+.spark{display:block;width:100%;height:70px;margin-top:12px}
+.strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.dot{aspect-ratio:1;border-radius:14px;border:1px solid var(--bd);background:var(--in);color:var(--mut);font:inherit;font-weight:800;font-size:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;cursor:pointer}
+.dot small{font-size:10px;font-weight:600;opacity:.85}.dot .amt{font-size:12px;font-weight:700;opacity:1;min-height:14px}
+.dot.w{background:var(--gn);color:#fff;border-color:var(--gn)}.dot.l{background:var(--rd);color:#fff;border-color:var(--rd)}.dot.z{background:var(--ink);color:#fff;border-color:var(--ink)}
+#strip label{margin-bottom:10px}
+.ap{width:100%;min-height:44px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--mut);font:inherit;font-weight:800;font-size:14px;cursor:pointer;padding:0}
+.ap.y{background:var(--gnbg);color:var(--gn);border-color:var(--gn)}.ap.n{background:var(--rdbg);color:var(--rd);border-color:var(--rd)}
+
+/* domino blue-red theme */
+:root{--bg:#9dbbd0;--card:#fff;--in:#e3eef6;--tx:#04202f;--mut:#2a4a5f;--bd:#86a9bf;--ink:#00466a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#061824;--card:#0c2a3f;--in:#082133;--tx:#e6f2fa;--mut:#8fb0c4;--bd:#17405a;--ink:#00608f}}
+:root[data-theme="dark"]{--bg:#061824;--card:#0c2a3f;--in:#082133;--tx:#e6f2fa;--mut:#8fb0c4;--bd:#17405a;--ink:#00608f}
+body{background:radial-gradient(700px 320px at 8% -60px,rgba(0,70,106,.22),transparent) no-repeat,radial-gradient(600px 300px at 100% 0,rgba(192,16,43,.14),transparent) no-repeat,var(--bg)}
+h1{background:linear-gradient(90deg,#00486d,#c0102b);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+h1::after{background:linear-gradient(90deg,#00486d,#c0102b);width:60px}
+h2::before{content:"";display:inline-block;width:8px;height:18px;border-radius:4px;background:linear-gradient(#00486d,#c0102b);margin-right:10px;vertical-align:-3px}
+#stats .stat:first-child{background:linear-gradient(135deg,#002e47 0%,#00466a 60%,#00608f 100%);border:0;border-bottom:5px solid #c0102b;box-shadow:0 12px 30px rgba(0,70,106,.35)}
+#stats .stat:first-child span{color:#d6ecf8}
+#stats .stat:nth-child(odd){border-top:3px solid #00486d}#stats .stat:nth-child(even){border-top:3px solid #c0102b}
+.card[id^="card"]:not(.win):not(.loss):not(.flag){border-left-color:#00486d}
+input:focus,select:focus{outline-color:#00486d}
+#newm,#dl2{background:linear-gradient(135deg,#00486d,#00608f);border:0;color:#fff}
+.dot.z{background:#00486d;border-color:#00486d}
+.emo{border-color:#c0102b}
+
+/* onboarding tour */
+#tour{position:fixed;inset:0;z-index:100;background:rgba(2,20,32,.74);display:none;align-items:center;justify-content:center;padding:20px}
+.tbox{background:var(--card);color:var(--tx);border-radius:20px;padding:20px;max-width:420px;width:100%;border-top:5px solid #c0102b;box-shadow:0 20px 50px rgba(0,0,0,.4);max-height:90vh;overflow:auto}
+.tbox h3{margin:4px 0 8px;font-size:20px}.tbox p{margin:0 0 16px;line-height:1.65;font-size:15px}
+.tstep{font-size:12px;font-weight:700;color:var(--mut)}
+.tbtn{display:flex;justify-content:space-between;gap:10px}
+.tbtn button{font:inherit;font-weight:700;border-radius:12px;padding:12px 16px;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+.tbtn .tnext{background:#00486d;color:#fff;border:0;flex:1}
+#help{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:44px;height:44px;border-radius:50%;border:0;background:#00486d;color:#fff;font:inherit;font-size:20px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.3);z-index:40;cursor:pointer}
+
+/* market sessions */
+#ms select{margin-bottom:8px}
+.msc{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--bd)}
+.mshdr{background:linear-gradient(135deg,#00486d,#00608f);color:#fff;padding:8px 14px;font-weight:800;font-size:14px}
+.msaxis{position:relative;height:26px;background:#46657a;color:#fff;font-size:12px}
+.msaxis span{position:absolute;top:5px;transform:translateX(-50%)}
+.msaxis span:first-child{transform:none;left:4px!important}
+.msrows{position:relative;height:148px}
+.msrow{position:absolute;left:0;right:0;height:28px}
+.msseg{position:absolute;top:0;height:28px;border:2px solid;border-radius:7px;box-sizing:border-box}
+.msseg.open{box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.mslbl{position:absolute;top:0;line-height:28px;font-size:12px;white-space:nowrap;padding-left:7px;font-weight:600;pointer-events:none}
+.mslbl b{margin-right:5px}
+.msnow{position:absolute;top:0;bottom:0;width:3px;background:#27ae60;margin-left:-1px;z-index:5}
+.msgrid{position:absolute;top:0;bottom:0;width:1px;background:var(--bd);opacity:.6}
+.mslist{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.msit{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 10px;font-size:13px}
+.msit small{color:var(--mut);display:block}
+.msbadge{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--in);color:var(--mut);white-space:nowrap;border:1px solid var(--bd)}
+.msbadge.on{background:var(--gn);color:#fff;border-color:var(--gn)}
+.msnote{color:var(--mut);font-size:12px;margin-top:10px}
+.strip{grid-template-columns:repeat(5,minmax(0,1fr))}
+.dot{aspect-ratio:auto;height:78px;width:100%;min-width:0;overflow:hidden}
+
+
+
+/* moving border light */
+@property --a{syntax:"<angle>";initial-value:0deg;inherits:true}
+@keyframes mhspin{to{--a:360deg}}
+:root{animation:mhspin 40s linear infinite}
+.card,.stat,.msc{position:relative}
+.card::before,.stat::before,.msc::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:4px;pointer-events:none;filter:drop-shadow(0 0 6px rgba(0,207,255,1)) drop-shadow(0 0 14px rgba(0,207,255,.75));
+ background:conic-gradient(from var(--a),transparent 0 36%,#00cfff 60%,#ffffff 76%,#ff3b5c 90%,transparent 100%);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.msc::before{inset:0}
+@media (prefers-reduced-motion:reduce){:root{animation:none}}
+
+/* black background */
+body{background:#000!important}
+h1{background:linear-gradient(90deg,#38bdf8,#ff4d6d);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+h2{color:#fff}
+body>.sub,.msnote{color:#aab7c4}
+
+/* typing title */
+h1{font-size:24px;line-height:1.3;padding-top:3px;min-height:1.4em;letter-spacing:.02em}
+#ty::after{content:"|";margin-left:2px;animation:mhblink 1s steps(1) infinite}
+@keyframes mhblink{50%{opacity:0}}
+
+/* magic title */
+h1{background:none;color:var(--tx);-webkit-text-fill-color:initial}
+#ty{display:inline-block;background:linear-gradient(90deg,#38bdf8,#ff4d6d);background-size:340px 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+#ty.poof{transition:opacity .45s ease,filter .45s ease,transform .45s ease;opacity:0;filter:blur(10px);transform:scale(1.18)}
+
+/* dust title */
+#ty{position:relative}
+#ty.dusting{background:none;-webkit-text-fill-color:currentcolor}
+#ty.dusting::after{content:none}
+.dl{display:inline-block;-webkit-text-fill-color:currentcolor;animation:mhdust 1.3s ease-in forwards;animation-delay:var(--d)}
+.dp{position:absolute;width:3px;height:3px;border-radius:50%;opacity:0;animation:mhdust 1.2s ease-out forwards;animation-delay:var(--d)}
+@keyframes mhdust{0%{opacity:1;transform:none;filter:blur(0)}100%{opacity:0;transform:scale(.9);filter:blur(6px)}}
+
+.emo.no{background:var(--rdbg);border:1.5px solid var(--rd);color:var(--rd)}
+
+
+/* trade boxes */
+.tg{border:2px solid var(--tx);border-radius:14px;padding:10px 10px 2px;margin-bottom:12px}
+
+/* targets */
+.bar{height:18px;background:rgba(255,255,255,.2);border-radius:12px;margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#14532d,#15803d 55%,#16a34a);border-radius:12px;box-shadow:0 0 10px rgba(34,197,94,.55)}
+.tgt{font-size:12px;font-weight:600;color:#d6ecf8;margin-top:6px}
+
+/* checklist cross + odd stat */
+.chk .no i{background:transparent;border-color:var(--rd);font-size:12px}.chk .no i::after{content:"❌"}
+#stats .stat:last-child:nth-child(odd){grid-column:1/-1}
+
+/* big remaining-to-target card */
+#stats .stat:last-child{grid-column:1/-1;padding:18px 18px 16px;text-align:center}
+#stats .stat:last-child span{font-size:15px;font-weight:700}
+#stats .stat:last-child b{font-size:40px;letter-spacing:-.02em;margin-top:6px;color:var(--ink)}
+
+/* lot calculator */
+#lcout{margin-top:12px}
+#lcout .lcbig{text-align:center;background:var(--in);border-radius:14px;padding:14px 10px}
+#lcout .lcbig span{display:block;font-size:13px;font-weight:700;color:var(--mut)}
+#lcout .lcbig b{display:block;font-size:44px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1.15}
+#lcout .lcln{font-size:13.5px;margin:8px 2px 0;line-height:1.5}
+#lcout .lcwarn{font-size:13px;font-weight:700;color:var(--rd);margin:10px 2px 0;line-height:1.5}
+#lcout table{margin-top:10px}
+.pickbtn{font:inherit;font-weight:700;font-size:14px;min-height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--tx);cursor:pointer}.pickbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 12px}.modes button{font:inherit;font-weight:700;font-size:13.5px;min-height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--tx);cursor:pointer}.modes button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+
+body{padding:18px 16px 96px;max-width:600px;line-height:1.5;font-size:15px;}
+h1{font-size:clamp(20px,6.6vw,30px);font-weight:800;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;}
+h1::after{width:56px;height:4px;}
+h2{font-size:17px;font-weight:800;margin:30px 0 12px;letter-spacing:-.01em;}
+h2::before{width:6px;height:18px;border-radius:6px;margin-right:10px;}
+.sub{font-size:12.5px;}
+.card{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-left-width:1px;border-radius:22px;padding:16px;margin-bottom:14px;transition:transform .2s,box-shadow .2s;}
+.stat{border-radius:18px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+#stats .stat:first-child{padding:20px;}
+input,select{border-radius:14px;transition:border-color .2s,box-shadow .2s;}
+label{font-size:12px;font-weight:600;}
+.modes button,.pickbtn,.rules.rl button,.chk button{transition:transform .15s,background .2s,border-color .2s,color .2s;}
+.modes button:active,.pickbtn:active,.dot:active,.ap:active,.emo:active{transform:scale(.97);}
+.modes button,.pickbtn{border-radius:14px;font-weight:700;}
+.dot{border-radius:16px;}
+.ap{border-radius:14px;}
+.emo{border-radius:16px;}
+.rules.rl button{border-radius:14px;}
+.pre{border-radius:16px;}
+.pre .note{border-radius:12px;}
+button.reset{border-radius:16px;}
+#newm,#dl2{border-radius:16px;}
+.pill{border-radius:99px;}
+.msc{border-radius:20px;}
+.msit{border-radius:14px;}
+.tbox{border-radius:24px;}
+.tbtn button{border-radius:14px;}
+
+
+/* always-highlighted day and trade labels */
+.card .head b{display:inline-block;padding:4px 12px;border-radius:99px;font-size:14px;}
+.tg .row.trade>div:first-child>label{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:800;margin-bottom:6px;}
+
+/* mobile performance: remove the heavy effects on small screens */
+@media (max-width:700px){
+ .card::before,.stat::before,.msc::before{filter:none!important;animation:none!important;}
+ .card,.stat,.msc,input,select{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+ .card:hover{transform:none!important;}
+}
+
+/* collapsible option groups: show the selected choice, tap to see the rest */
+.grp.collapsed{grid-template-columns:1fr!important;}
+.grp.collapsed>button:not(.on){display:none!important;}
+.grp.collapsed>button.on::after{content:"  ▾";font-size:12px;opacity:.85;}
+
+/* compact professional options popover */
+#tpick{width:172px!important;padding:6px!important;gap:4px!important;grid-template-columns:1fr!important;border-radius:14px!important;}
+#tpick .pickbtn{padding:7px 10px!important;font-size:13px!important;min-height:34px!important;border-radius:11px!important;text-align:left!important;font-weight:700!important;}
+#lcout .lcln b,#propbox .lcln b{padding:1px 7px;border-radius:8px;}
+#propbox .lcln:first-child{border-radius:14px;padding:8px 12px;margin-bottom:6px;}
+#lcout table tr:first-child td{font-weight:800;}
+
+/* real month calendar */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px;}
+.cw{font-size:11px;font-weight:700;text-align:center;padding:2px 0;}
+.cday{aspect-ratio:1/1;min-width:0;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:inherit;font-size:13px;font-weight:700;padding:2px;cursor:pointer;}
+.cday small{font-size:9px;font-weight:700;}
+.cday.wk{opacity:.3;cursor:default;}
+.cday .amt{font-size:9px;}
+.calhd{font-size:16px;font-weight:800;margin:6px 0 2px;letter-spacing:-.01em;}
+
+/* calendar day boxes: equal squares, readable on green/red */
+.cal .cday{height:auto!important;width:100%!important;aspect-ratio:1/1!important;min-width:0;overflow:hidden;padding:2px;}
+.cal .cday.w small,.cal .cday.l small,.cal .cday.z small{opacity:1;}
+
+/* calendar: fixed, even squares with text that fits */
+.cal{grid-auto-rows:auto;align-items:start;}
+.cal .cday{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;font-size:13px!important;line-height:1!important;height:auto!important;max-height:none!important;width:100%!important;aspect-ratio:1/1!important;padding:3px 2px!important;overflow:visible!important;border-radius:12px!important;}
+.cal .cday b{font-size:15px!important;line-height:1!important;font-weight:800!important;margin:0!important;}
+.cal .cday small{font-size:9px!important;line-height:1!important;font-weight:700!important;margin:0!important;opacity:1;}
+.cal .cday .amt{font-size:9px!important;min-height:0!important;line-height:1!important;}
+.cal .cday{aspect-ratio:1/1.12!important;padding:5px 2px!important;}
+.cal .cday b{font-size:18px!important;}
+.cal .cday small{font-size:10px!important;}
+.cal .cday .amt{font-size:10px!important;}
+
+/* smaller, tighter total-target popover */
+#tpick{width:112px!important;padding:3px!important;gap:2px!important;border-radius:9px!important;}
+#tpick .pickbtn{padding:3px 8px!important;font-size:11px!important;font-weight:700!important;min-height:22px!important;border-radius:7px!important;line-height:1.1!important;letter-spacing:.01em;}
+
+/* compact settings + lot calculator card */
+.card.two{padding:12px!important;gap:8px 10px!important;}
+.card.two label{font-size:11px!important;margin-bottom:2px!important;}
+.card.two input,.card.two select{padding:8px 10px!important;font-size:14px!important;border-radius:11px!important;min-height:0!important;}
+.card.two h2{margin:10px 0 6px!important;font-size:15px!important;}
+#lc .lcbig{padding:8px!important;border-radius:12px!important;}
+#lc .lcbig b{font-size:34px!important;}
+#lc .lcbig span{font-size:11px!important;}
+#lcout .lcln{font-size:13px!important;margin:3px 0!important;line-height:1.35!important;}
+#lc .modes button,#lca button,#lcpt button,#lcph button,#lcm button,#dcs button,#drs button{min-height:36px!important;font-size:13px!important;padding:6px 8px!important;border-radius:11px!important;}
+#lc .modes{gap:6px!important;margin:6px 0!important;}
+
+/* tighter again */
+.card.two{padding:10px!important;gap:6px 8px!important;}
+.card.two label{font-size:10.5px!important;}
+.card.two input,.card.two select{padding:6px 9px!important;font-size:13px!important;border-radius:9px!important;}
+.card.two h2{margin:8px 0 4px!important;font-size:14px!important;}
+#lc .lcbig{padding:6px!important;}
+#lc .lcbig b{font-size:30px!important;}
+#lcout .lcln{font-size:12px!important;margin:2px 0!important;line-height:1.3!important;}
+#lc .modes button,#lca button,#lcpt button,#lcph button,#lcm button,#dcs button,#drs button{min-height:32px!important;font-size:12px!important;padding:4px 6px!important;border-radius:9px!important;}
+#lc .modes{gap:5px!important;margin:4px 0!important;}
+
+
+/* trade boxes: slimmer borders, straight columns, two rows */
+.tg .row{display:grid!important;gap:6px!important;margin-bottom:6px;}
+.tg .row.trade{grid-template-columns:2fr 1fr 1fr!important;}
+.tg .row:not(.trade){grid-template-columns:2fr 1fr 1fr!important;}
+.tg .row:not(.trade)>div:nth-child(2){grid-column:span 2;}
+.tg input,.tg select,.tg .ap{height:40px!important;min-height:0!important;padding:6px 8px!important;font-size:13px!important;border-radius:10px!important;}
+
+/* trade boxes: pair box narrower and shorter, Dir. and A+ taller, all tops aligned in one line */
+.tg .row{align-items:start!important;}
+.tg .row.trade{grid-template-columns:1.4fr 1fr 1fr!important;}
+.tg .row:not(.trade){grid-template-columns:1.4fr 1fr 1fr!important;}
+.tg label{height:18px!important;line-height:18px!important;margin-bottom:4px!important;overflow:hidden;white-space:nowrap;}
+.tg .row.trade>div:first-child>label{height:auto!important;line-height:1.2!important;display:inline-block!important;margin-bottom:6px!important;}
+.tg .row.trade>div:first-child input{height:40px!important;}
+.tg .row.trade>div:nth-child(2) select,.tg .row.trade>div:nth-child(3) .ap{height:56px!important;}
+.tg .row:not(.trade)>div input{height:40px!important;}
+
+/* final sizes: pair box short, Dir. and A+ Set boxes tall */
+#days .tg .row.trade>div:first-child input{height:34px!important;min-height:0!important;}
+#days .tg .row.trade>div:nth-child(2) select{height:60px!important;min-height:60px!important;}
+#days .tg .row.trade>div:nth-child(3) button{height:60px!important;min-height:60px!important;}
+
+/* all trade boxes the same height */
+#days .tg .row.trade>div:first-child input,#days .tg .row.trade>div:nth-child(2) select,#days .tg .row.trade>div:nth-child(3) button,#days .tg .row:not(.trade)>div input{height:40px!important;min-height:40px!important;max-height:40px!important;box-sizing:border-box!important;}
+
+/* straight, equal trade boxes: every label has the same height so all box tops line up */
+#days .tg label{display:block!important;height:20px!important;line-height:20px!important;margin:0 0 4px!important;padding:0!important;overflow:hidden;white-space:nowrap;}
+#days .tg .row.trade>div:first-child>label{width:max-content!important;height:20px!important;line-height:20px!important;padding:0 10px!important;border-radius:99px!important;margin:0 0 4px!important;}
+
+/* compact end-of-day section: no empty space, fields fit inside the card */
+#days .row.eod{gap:6px!important;margin:0 0 6px!important;}
+#days .row.eod>div{min-width:0;}
+#days .row.eod input{width:100%!important;box-sizing:border-box!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;border-radius:10px!important;}
+#days .row.eod label{margin-bottom:2px!important;font-size:11px!important;}
+#days .row.eod .stars button{font-size:18px!important;padding:0 2px!important;line-height:1!important;}
+
+/* smaller writing boxes: day notes and weekly mistakes */
+#days .row.eod input{height:30px!important;padding:4px 8px!important;font-size:12px!important;border-radius:8px!important;}
+#days .row.eod label{font-size:10px!important;margin-bottom:1px!important;}
+#days .row.eod .stars button{font-size:15px!important;}
+#mist input{height:30px!important;padding:4px 8px!important;font-size:12px!important;border-radius:8px!important;}
+#mist label{font-size:10px!important;}
+
+/* month controls: distinct look */
+.card:has(#msel),.card:has(#mname){border-radius:26px!important;}
+.card:has(#msel) label,.card:has(#mname) label{font-size:10.5px!important;font-weight:800!important;letter-spacing:.14em!important;text-transform:uppercase;}
+#msel,#mname,#ymonth{height:46px!important;border-radius:16px!important;font-weight:700!important;font-size:15px!important;}
+#newm{height:46px!important;border-radius:999px!important;font-size:14px!important;font-weight:800!important;letter-spacing:.02em;}
+.card{border-radius:24px!important;}
+.stat{border-radius:20px!important;}
+.stat span{letter-spacing:.06em;text-transform:uppercase;font-size:10.5px!important;}
+h2{letter-spacing:.02em;}
+input,select{border-radius:14px!important;}
+label{letter-spacing:.04em;}
+table th{letter-spacing:.06em;text-transform:uppercase;font-size:11px;}
+.modes button,.pickbtn{border-radius:14px!important;}
+.dot{border-radius:16px!important;}
+.card .head b{letter-spacing:.02em;}
+
+/* keep the Trade pill text bright white (the general label colour was washing it out) */
+.tg .row.trade>div:first-child>label{font-weight:800!important;}
+
+/* typography: consistent styled text across the app (no size or layout changes) */
+body{font-feature-settings:"tnum" 0,"lnum" 1;}
+h2{font-weight:800;}
+label{font-weight:700!important;}
+.sub{font-style:italic;}
+.stat span{font-weight:700!important;}
+.stat b,.lcbig b,#stats .stat:last-child b{font-variant-numeric:tabular-nums;font-weight:800;}
+.card .head b{font-weight:800!important;}
+table td{font-variant-numeric:tabular-nums;}
+table th{font-weight:800!important;}
+.lcln b{font-weight:800;}
+button{font-weight:800;}
+
+/* calendar & trading month card */
+.mcal{padding:18px 16px!important;border-radius:26px!important;}
+.mtitle{font-size:12px;font-weight:800;letter-spacing:.04em;margin-bottom:6px;}
+.mbig{font-size:26px;font-weight:800;line-height:1.15;margin-bottom:12px;}
+.mnav{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.mnav button{height:38px;border-radius:999px;font-weight:800;cursor:pointer;}
+.mnav button#mprev,.mnav button#mnext{width:38px;padding:0;font-size:13px;}
+.mnav button#mtoday{flex:1;font-size:13px;}
+.mnav button:active{transform:scale(.96);}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.mrow label,.mcal>label{font-size:11px!important;font-weight:700!important;margin-bottom:4px!important;}
+.mrow select,.mcal textarea#mname{height:44px!important;border-radius:14px!important;font-weight:700!important;font-size:15px!important;}
+.mcal textarea#mname{width:100%;box-sizing:border-box;resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-weight:700;font-size:15px;padding:10px 12px;border-radius:14px;}
+
+/* + New month: keep the label on one line inside the button */
+#newm{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:13px!important;padding:0 12px!important;min-width:0!important;line-height:1.1!important;max-width:100%!important;box-sizing:border-box!important;}
+
+/* account / phase badge in the month card */
+.acctbadge{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 13px;border-radius:999px;font-size:12px;font-weight:800;}
+.acctbadge:before{content:"";width:7px;height:7px;border-radius:50%;}
+
+/* account sync card */
+#authcard input{margin-bottom:0;}
+#alogin{display:grid;gap:6px;}
+#alogin .arow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+#alogin .arow button,#alogout{height:40px;border-radius:999px;font-weight:800;cursor:pointer;}
+#alogout{margin-top:4px;width:100%;}
+#authmsg{margin-top:8px;font-size:12px;}
+
+/* daily market break card */
+.brk-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+#bkout{display:grid;gap:8px;}
+.bkstat{display:inline-flex;align-items:center;gap:8px;width:fit-content;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:800;}
+.bkline{font-size:15px;font-weight:700;}
+
+/* smaller, tighter popups (less empty space) */
+#tour{padding:14px;}
+.tbox{max-width:320px!important;padding:14px 14px 12px!important;border-radius:16px!important;}
+.tbox h3{margin:2px 0 4px!important;font-size:16px!important;}
+.tbox p{margin:0 0 10px!important;font-size:13px!important;line-height:1.5!important;}
+.tstep{font-size:11px!important;}
+.tbtn{gap:8px!important;}
+.tbtn button{padding:8px 12px!important;font-size:13px!important;border-radius:10px!important;}
+#tpick{width:112px!important;}
+#ov{padding:10px!important;}
+#ov>div,#ov .ovbox{max-width:360px!important;padding:10px!important;border-radius:16px!important;}
+
+/* notes: wraps long text and grows so everything can be read */
+#days .row.eod textarea{width:100%!important;box-sizing:border-box!important;min-height:44px!important;padding:6px 9px!important;font:inherit!important;font-size:13px!important;line-height:1.4!important;border-radius:10px!important;resize:vertical!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;}
+
+/* all writing boxes grow with the text */
+#days .row.eod textarea{width:100%!important;box-sizing:border-box!important;min-height:34px!important;padding:6px 9px!important;font:inherit!important;font-size:13px!important;line-height:1.4!important;border-radius:10px!important;resize:none!important;overflow:hidden!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;}
+
+/* growing boxes: let the height follow the text */
+.mcal textarea#mname,#days textarea{height:auto!important;min-height:34px!important;}
+
+/* hide / show button for writing boxes */
+.ftog{display:block;margin:0 0 4px auto;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;}
+
+/* profile photo */
+.pfp{display:block;width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 0 10px;}
+
+/* compact, professional popups */
+#tour{padding:10px!important;backdrop-filter:blur(4px);}
+.tbox{max-width:290px!important;padding:12px!important;border-radius:14px!important;}
+.tbox h3{margin:0 0 4px!important;font-size:14px!important;font-weight:800!important;letter-spacing:.01em;}
+.tbox p{margin:0 0 8px!important;font-size:12px!important;line-height:1.45!important;}
+.tstep{font-size:10px!important;letter-spacing:.06em;margin-bottom:2px;}
+.tbtn{gap:6px!important;margin-top:4px;}
+.tbtn button{padding:6px 10px!important;font-size:12px!important;border-radius:9px!important;min-height:0!important;}
+#tpick{width:104px!important;padding:3px!important;border-radius:10px!important;}
+#tpick .pickbtn{font-size:11px!important;min-height:22px!important;padding:2px 6px!important;}
+#ov{padding:8px!important;}
+#ov>div,#ov .ovbox{max-width:300px!important;padding:8px!important;border-radius:14px!important;}
+#ovx{font-size:12px!important;height:34px!important;padding:0 12px!important;border-radius:999px!important;}
+body,button,input,select,textarea,label,p,span,div,td,th,h1,h2,h3{font-family:var(--ff)!important;}
+body{letter-spacing:.01em;}
+h1{letter-spacing:-.02em!important;}
+h2{letter-spacing:.01em!important;}
+input,select,textarea,button{font-family:var(--ff)!important;}
+.stat b,.lcbig b,.cday b,td,th{font-variant-numeric:tabular-nums;}
+
+/* every piece of text, including pseudo-elements and dropdown options */
+*,*::before,*::after{font-family:"Outfit","Hind Siliguri",system-ui,sans-serif!important;}
+option,optgroup{font-family:"Outfit","Hind Siliguri",system-ui,sans-serif!important;}
+
+/* laptop / desktop layout: wider page, more columns (phone layout is unchanged) */
+@media (min-width:900px){
+ body{max-width:1120px!important;padding:28px 32px 110px!important;}
+ h1{font-size:40px!important;}
+ h2{font-size:20px!important;margin:30px 0 14px!important;}
+ .card{padding:22px!important;}
+ .grid{grid-template-columns:repeat(4,1fr)!important;gap:14px!important;}
+ #stats{grid-template-columns:repeat(4,1fr)!important;gap:14px!important;}
+ #days{display:grid!important;grid-template-columns:1fr 1fr!important;gap:16px!important;align-items:start;}
+ #days>h2{grid-column:1/-1!important;}
+ #days>.card{margin-bottom:0!important;}
+ .mcal{max-width:none!important;}
+ .card.two{grid-template-columns:1fr 1fr!important;}
+ #lc{max-width:none;}
+ .tbox{max-width:360px!important;}
+}
+@media (min-width:1280px){
+ body{max-width:1280px!important;}
+ #days{grid-template-columns:1fr 1fr 1fr!important;}
+}
+.card,.stat,.mcal,.msc,.tbox,#tpick{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+.dot.w small,.dot.w b,.dot.w .amt,.dot.l small,.dot.l b,.dot.l .amt{opacity:1!important;}
+
+/* colours only: the coloured borders stay, but nothing rotates */
+:root{animation:none!important}
+
+/* profile: photo and Money Hungry logo cross-dissolve with a zoom, glowing gold ring, looping every 12s */
+.pfpw{position:relative;width:64px;height:64px;margin:0 0 10px;border-radius:50%;isolation:isolate}
+.pfpw::before{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #d4af37;box-shadow:0 0 14px rgba(212,175,55,.55),inset 0 0 10px rgba(212,175,55,.35);animation:pfpRing 12s ease-in-out infinite;pointer-events:none;z-index:2}
+.pfpw .pfp{position:absolute;inset:0;width:100%;height:100%;margin:0!important;border-radius:50%;object-fit:cover;transform-origin:50% 50%}
+.pfpw .pfp1{animation:pfpPhoto 12s ease-in-out infinite}
+.pfpw .pfp2{opacity:0;background:#000;animation:pfpLogo 12s ease-in-out infinite}
+@keyframes pfpPhoto{0%,38%{opacity:1;transform:scale(1);filter:blur(0)}50%,90%{opacity:0;transform:scale(1.35);filter:blur(7px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
+@keyframes pfpLogo{0%,38%{opacity:0;transform:scale(.6) rotate(-12deg);filter:blur(8px)}50%,90%{opacity:1;transform:scale(1) rotate(0);filter:blur(0)}100%{opacity:0;transform:scale(.6) rotate(12deg);filter:blur(8px)}}
+@keyframes pfpRing{0%,100%{border-color:#d4af37;box-shadow:0 0 10px rgba(212,175,55,.4)}50%{border-color:#fde68a;box-shadow:0 0 22px rgba(253,230,138,.8)}}
+@media (prefers-reduced-motion:reduce){.pfpw::before,.pfpw .pfp1,.pfpw .pfp2{animation:none}.pfpw .pfp2{opacity:0}.pfpw .pfp1{opacity:1}}
+
+/* header row: profile photo and a motivational advice card */
+.hrow{display:flex;align-items:center;gap:14px;margin:4px 0 6px}
+.hrow .pfpw{flex:0 0 auto;margin:0}
+.advice{flex:1;min-width:0;position:relative;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(30,41,59,.85));border:1px solid rgba(212,175,55,.35);box-shadow:0 8px 22px rgba(0,0,0,.35);overflow:hidden}
+.advice:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(#fde68a,#d4af37)}
+.adv-tag{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#d4af37;margin-bottom:4px}
+.adv-text{font-size:14px;font-weight:700;line-height:1.35;color:#f1f5f9;transition:opacity .6s ease,transform .6s ease}
+.adv-text.fade{opacity:0;transform:translateY(6px)}
+.adv-bn{margin-top:4px;font-size:12px;color:#cbd5e1;line-height:1.4}
+@media (max-width:360px){.adv-text{font-size:13px}}
+
+/* highlighted advice text that catches the eye */
+.adv-text{font-size:15px!important;font-weight:800!important;color:#fde68a!important;text-shadow:0 0 12px rgba(253,230,138,.45);background:linear-gradient(transparent 58%,rgba(212,175,55,.42) 58%,rgba(212,175,55,.42) 92%,transparent 92%);padding:0 2px;display:inline;box-decoration-break:clone;-webkit-box-decoration-break:clone;line-height:1.7!important}
+.adv-bn{display:inline-block;margin-top:6px!important;padding:3px 10px;border-radius:999px;background:rgba(212,175,55,.18);border:1px solid rgba(212,175,55,.55);color:#fef3c7!important;font-size:12px!important;font-weight:700}
+.advice{box-shadow:0 0 0 1px rgba(212,175,55,.25),0 10px 28px rgba(212,175,55,.18),0 8px 22px rgba(0,0,0,.35)!important}
+.adv-tag{color:#fde68a!important}
+
+/* advice text: crisp and high-contrast */
+.advice{background:#0f1c2e!important;border:1px solid rgba(212,175,55,.45)!important}
+.adv-text{color:#ffffff!important;text-shadow:0 1px 2px rgba(0,0,0,.7)!important;text-shadow:none!important;background:linear-gradient(transparent 62%,rgba(212,175,55,.5) 62%,rgba(212,175,55,.5) 94%,transparent 94%)!important;font-weight:700!important;letter-spacing:.005em}
+.adv-bn{color:#ffffff!important;background:rgba(212,175,55,.28)!important;border:1px solid rgba(212,175,55,.7)!important;font-weight:700!important}
+.adv-tag{color:#fde68a!important}
+
+/* one combined month card: saved-month selector on top, calendar below */
+.mtop{display:grid;grid-template-columns:2fr 1fr;gap:10px;align-items:end;margin-bottom:14px}
+.mtop>div label{display:block}
+.mtop #newm{height:44px!important;margin:0!important;width:100%}
+
+/* back to top: at the end of the page */
+.totop-end{display:flex;justify-content:center;margin:28px 0 8px}
+.totop-btn{height:40px;padding:0 20px;border-radius:999px;border:1px solid #2c5282;background:#3b82f6;color:#fff;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.3)}
+.totop-btn:active{transform:scale(.97)}
+
+/* floating back-to-top: any time you scroll down, one tap goes to the top */
+.gtop{position:fixed;right:14px;bottom:74px;z-index:40;width:42px;height:42px;border-radius:50%;border:1px solid #2c5282;background:#3b82f6;color:#fff;font-size:20px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.35);opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .25s ease,transform .25s ease}
+.gtop.show{opacity:.92;transform:translateY(0);pointer-events:auto}
+.gtop:active{transform:scale(.94)}
+</style></head><body>
+<h1 aria-label="Mahfuj’s Trading Log"><span id="ty">MAHFUJ TRADING LOG</span></h1>
+<div class="hrow"><div class="pfpw" id="pfpw"><img class="pfp pfp1" alt="Mahfuj" src="data:image/jpeg;base64,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"><img class="pfp pfp2" alt="Money Hungry Trading" src="data:image/jpeg;base64,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"></div><div class="advice" id="advice"><div class="adv-text" id="advtext">Discipline beats motivation. Follow your plan.</div><div class="adv-bn">আজকের মন্ত্র: পরিকল্পনা মেনে চলুন।</div></div></div>
+
+<div class="card mcal"><div class="mtop"><div><label>Month</label><select id="msel"></select></div><button class="reset" id="newm">+ New month</button></div><div class="mtitle">📅 Calendar &amp; trading month</div><div class="mbig" id="mbig">–</div><div class="mnav"><button type="button" id="mprev" aria-label="Previous month">◀</button><button type="button" id="mtoday">📅 Current month</button><button type="button" id="mnext" aria-label="Next month">▶</button></div><div class="mrow"><div><label>Month</label><select id="mmon"></select></div><div><label>Year</label><select id="myr"></select></div></div><label>Month name / note</label><textarea id="mname" rows="1"></textarea><div id="acctbadge" class="acctbadge"></div><input id="ymonth" type="month" style="display:none"></div>
+<div id="dls" style="margin-bottom:10px"><button class="reset" id="dl2" style="margin:0 0 6px;width:100%">⬇ Download PDF (all data)</button><button class="reset" id="dl" style="margin:0;width:100%">⬇ Download image (PNG)</button><input type="file" id="rsf" accept=".json,application/json,text/plain" style="display:none"></div>
+<h2>⏸ Daily market break</h2><div class="card" id="brk"><div class="brk-row"><div><label>Instrument</label><select id="bkins"></select></div><div><label>Country</label><select id="bkz"></select></div></div><div id="bkout"></div><p class="sub" style="margin:8px 0 0">Break times are typical for many brokers. Check your broker's own schedule.</p></div>
+<h2>🌍 ফরেক্স মার্কেট সেশন</h2>
+<div id="ms"><select id="mstz"></select><div class="msc"><div class="mshdr">Sessions</div><div class="msaxis" id="msaxis"></div><div class="msrows" id="msrows"></div></div><div class="mslist" id="mslist"></div><div class="msnote">সবুজ রেখা = এখন। গাঢ় বার = সেশন খোলা। শনি ও রবিবার ফরেক্স বাজার বন্ধ থাকে।</div></div>
+<p class="sub">Tap rules to cycle Y / N. Each month is saved separately on this device. A new month starts from 0.</p>
+
+<div class="card two">
+ <div style="grid-column:1/-1"><label>Starting balance ($) <span id="startk" style="color:var(--gn)"></span></label><input id="start" type="number" inputmode="decimal"></div>
+ <div><label>Max daily loss (%)</label><input id="maxl" type="number" inputmode="decimal" step="0.1"></div>
+ <div><label>Max daily loss ($)</label><input id="maxd" type="number" inputmode="decimal" step="any"></div>
+ <div><label>Daily profit target ($)</label><input id="dtgt" type="number" inputmode="decimal" step="any" placeholder="e.g. 20"></div>
+ <div><label>Total profit target ($)</label><div style="position:relative"><input id="mtgt" type="number" inputmode="decimal" step="any" placeholder="e.g. 400" style="padding-right:64px"><span id="tpct" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--gn);font-weight:700;pointer-events:none"></span><div id="tpick" style="display:none;position:absolute;right:0;top:100%;margin-top:6px;width:210px;z-index:30;grid-template-columns:1fr 1fr;gap:6px;padding:8px;background:var(--card);border:1px solid var(--bd);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)"><button data-p="12" class="pickbtn">12%</button><button data-p="10" class="pickbtn">10%</button><button data-p="9" class="pickbtn">9%</button><button data-p="8" class="pickbtn">8%</button><button data-p="7" class="pickbtn">7%</button><button data-p="6" class="pickbtn">6%</button><button data-p="5" class="pickbtn">5%</button><button data-p="4" class="pickbtn">4%</button></div></div></div>
+
+<h2 style="margin:22px 0 12px;grid-column:1/-1">🧮 Lot Size Calculator</h2>
+<div id="lc" style="grid-column:1/-1"><div class="two">
+ <div><label>Trades per day</label><input id="lct" type="number" inputmode="numeric" step="1" placeholder="3"></div>
+ <div><label>Stop loss (pips)</label><input id="lcs" type="number" inputmode="decimal" step="any" placeholder="20"></div>
+<div><label>Instrument</label><select id="lci"><option value="eurusd">EURUSD</option><option value="gbpusd">GBPUSD</option><option value="xauusd">XAUUSD (Gold)</option><option value="usdjpy">USDJPY</option><option value="gbpjpy">GBPJPY</option><option value="eurjpy">EURJPY</option><option value="audusd">AUDUSD</option><option value="nzdusd">NZDUSD</option><option value="usdcad">USDCAD</option><option value="usdchf">USDCHF</option><option value="btcusd">BTCUSD</option><option value="us30">US30</option><option value="nas100">NAS100</option><option value="custom">Other (custom)</option></select></div><div id="lcnw" style="display:none"><label>Instrument name</label><input id="lcn" type="text" placeholder="e.g. NAS100"></div>
+<div style="grid-column:1/-1"><label>Pip value per 1.00 lot ($) — broker অনুযায়ী দিন</label><input id="lcp" type="number" inputmode="decimal" step="any"></div></div><div id="lca" class="modes" style="grid-template-columns:1fr 1fr"><button data-a="live">Live Capital</button><button data-a="prop">Prop Firm</button></div><div id="lcpt" class="modes" style="grid-template-columns:1fr 1fr 1fr;display:none"><button data-pt="1">1-Step</button><button data-pt="2">2-Step</button><button data-pt="i">Instant</button></div><div id="lcph" class="modes" style="grid-template-columns:1fr 1fr 1fr;display:none"><button data-ph="1">Phase 1</button><button data-ph="2">Phase 2</button><button data-ph="live">Prop Live</button></div><div id="lcm" class="modes"><button data-m="safe">Safe</button><button data-m="medium">Medium Risk</button><button data-m="high">High Risk</button></div>
+ <div id="mindw" style="display:none"><label>Daily profit target (% of balance)</label><div id="drs" class="modes" style="grid-template-columns:1fr 1fr;margin:6px 0 12px"><button data-dr="0.25">0.25%</button><button data-dr="0.5">0.5%</button></div><label>লাভের দিনের টার্গেট (দিনের ব্যালেন্সের নির্ধারিত % লাভ হলে দিন গোনা হবে)</label><div id="dcs" class="modes" style="grid-template-columns:1fr 1fr 1fr;margin:6px 0 0"><button data-dc="7">৭ দিন</button><button data-dc="5">৫ দিন</button><button data-dc="4">৪ দিন</button></div></div><div id="propbox" style="display:none"></div><div id="lcout"></div>
+ <p class="sub" style="margin:10px 0 0">This is a simple way to estimate, not trading advice. For Gold, 1 pip is assumed to be a 0.10 move. Actual numbers may differ slightly depending on your broker, leverage and pip value, so check on your own platform before trading.</p></div></div>
+
+<h2>Monthly numbers</h2>
+<div class="grid" id="stats"></div>
+<div class="card" id="strip" style="margin-top:12px"></div>
+
+<h2>Weekly review</h2>
+<div class="card"><table id="weeks"></table></div>
+<div class="card" id="mist"></div>
+
+<h2>Daily log</h2>
+<p class="sub">Rules check: tap once = ✓ followed, tap twice = ✗ broken, third tap clears. Dir.: B = buy, S = sell. A+ Set: tap once = Yes, tap again = No. P/L: loss is negative. Mood: tap the stars, 1 star = tilted, 5 stars = calm and focused.</p>
+<div id="days"></div>
+<button class="reset" id="reset">Clear this month</button>
+
+<button id="help" aria-label="Help">?</button>
+<script>
+var KEY="mh-trading-log-v2",OLD="mh-trading-log-v1",ST={c:0,m:[]},S;
+function blank(n){n=n||20;var d=[];for(var i=0;i<n;i++){d.push({r:[0,0,0,0,0,0],t:[{p:"",d:"",ap:"",pl:"",pp:""},{p:"",d:"",ap:"",pl:"",pp:""},{p:"",d:"",ap:"",pl:"",pp:""}],m:"",n:""})}return {s:1000,l:2,dt:"",mt:"",nm:"Month 1",d:d}}
+try{var raw=localStorage.getItem(KEY),old=localStorage.getItem(OLD);
+ if(raw){var o=JSON.parse(raw);if(o&&o.m&&o.m.length)ST=o}
+ else if(old){var p=JSON.parse(old);if(p&&p.d&&p.d.length===20){p.nm="Month 1";ST.m=[p]}}}catch(e){}
+if(!ST.m.length)ST.m=[blank()];
+if(ST.c>=ST.m.length)ST.c=0;
+S=ST.m[ST.c];
+function save(){ST.m[ST.c]=S;try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(e){}}
+function num(v){if(v===""||v===null)return NaN;var x=parseFloat(v);return isNaN(x)?NaN:x}
+function money(x){if(x===null||isNaN(x))return "–";return (x<0?"-":"")+Math.abs(x).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fp(x){return (x>0?"+":"")+(Math.round(x*10)/10)}
+function pct(x){return (x===null||isNaN(x))?"–":(x*100).toFixed(1)+"%"}
+function cls(x){return x>0?"pos":(x<0?"neg":"")}
+
+function calc(){
+ var start=num(S.s)||0,lim=(num(S.l)||0)/100*start,bal=start,peak=start,mdd=0,mddp=0;
+ var tr=0,w=0,l=0,gp=0,gl=0,wd=0,ld=0,pw=0,pls=0,tp=0,y=0,yn=0,res=[],wk=[0,1,2,3,4].map(function(){return {t:0,w:0,n:0,p:0}});
+ S.d.forEach(function(day,i){
+  var n=0,any=false,np=0,anyp=false,k=Math.floor(i/7);
+  day.t.forEach(function(t){var v=num(t.pl),p=num(t.pp),hv=!isNaN(v),hp=!isNaN(p);if(!hv&&!hp)return;
+   tr++;wk[k].t++;var o=hv?v:p;if(o>0){w++;wk[k].w++}else if(o<0){l++}
+   if(hv){any=true;n+=v;if(v>0){gp+=v;wd++}else if(v<0){gl+=v;ld++}}
+   if(hp){anyp=true;np+=p;tp+=p;if(p>0)pw+=p;else if(p<0)pls+=p;wk[k].p+=p}});
+  day.r.forEach(function(r){if(r){yn++;if(r===1)y++}});
+  if(any){bal+=n;wk[k].n+=n;if(bal>peak)peak=bal;var dd=peak-bal;if(dd>mdd)mdd=dd;if(peak>0&&dd/peak>mddp)mddp=dd/peak}
+  res.push({any:any,net:n,bal:bal,hit:any&&lim>0&&n<=-lim,anyp:anyp,pips:np,has:any||anyp,tone:any?n:(anyp?np:0)});
+ });
+ return {start:start,bal:bal,tr:tr,w:w,l:l,gp:gp,gl:gl,wd:wd,ld:ld,tp:tp,pw:pw,pls:pls,mdd:mdd,mddp:mddp,disc:yn?y/yn:NaN,res:res,wk:wk};
+}
+
+function stat(lab,val,c){return '<div class="stat"><span>'+lab+'</span><b class="'+(c||"")+'">'+val+'</b></div>'}
+function hero(c,net){
+ var pts=[c.start];c.res.forEach(function(r){if(r.any)pts.push(r.bal)});
+ var w=300,h=70,mn=Math.min.apply(null,pts),mx=Math.max.apply(null,pts),rg=(mx-mn)||1,svg="";
+ if(pts.length>1){var xy=pts.map(function(v,i){return [i*(w/(pts.length-1)),h-8-((v-mn)/rg)*(h-18)]}),d=xy.map(function(p,i){return (i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)}).join(" ");
+  svg='<svg class="spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0a526" stop-opacity=".45"/><stop offset="1" stop-color="#e0a526" stop-opacity="0"/></linearGradient></defs><path d="'+d+' L'+w+' '+h+' L0 '+h+' Z" fill="url(#sg)"/><path d="'+d+'" fill="none" stroke="#e0a526" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>'}
+ var pill=c.tr?'<em class="pill '+(net>=0?"up":"dn")+'">'+(net>=0?"▲ +":"▼ ")+money(net)+(c.start?" · "+pct(net/c.start):"")+'</em>':'<em class="pill">No trades yet</em>';
+ var mt=num(S.mt),bar=mt>0?'<div class="bar"><i style="width:'+Math.max(0,Math.min(100,net/mt*100)).toFixed(0)+'%"></i></div><div class="tgt">Target '+money(mt)+' · '+pct(net/mt)+' · '+(net>=mt?"🎯 পূরণ!":"আর "+money(mt-net)+" লাগবে")+'</div>':'';
+ return '<div class="stat"><span>Balance</span><b>'+money(c.bal)+'</b>'+pill+svg+bar+'</div>';
+}
+function amt(x){var a=Math.abs(x),s=x>0?"+":(x<0?"-":"");return s+(a>=1000?(a/1000).toFixed(1)+"k":a.toFixed(a%1?2:0))}
+function calLbl(){var y=(S.ym||"").split("-");return y[1]?["January","February","March","April","May","June","July","August","September","October","November","December"][+y[1]-1]+"-"+y[0]:""}
+function padDays(){var n=monthInfo().dim;while(S.d.length<n)S.d.push(blank(1).d[0])}
+function monthInfo(){var ym=(S.ym||"").split("-"),Y=+ym[0],M=+ym[1]-1;if(!(Y>0)){var n=new Date();Y=n.getFullYear();M=n.getMonth()}return {Y:Y,M:M,dim:new Date(Y,M+1,0).getDate()}}
+function idxDate(i){var mi=monthInfo(),k=0;for(var d=1;d<=mi.dim;d++){var wd=(new Date(mi.Y,mi.M,d).getDay()+6)%7;if(wd<5){if(k===i)return {d:d,wd:wd,mon:mi.M};k++}}return null}
+var MFULL=["January","February","March","April","May","June","July","August","September","October","November","December"];
+var WN=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function dayHead(i){var mi=monthInfo();if(i<mi.dim){var wd=(new Date(mi.Y,mi.M,i+1).getDay()+6)%7;return WN[wd]+" "+(i+1)+" "+MN[mi.M]+" · Day "+(i+1)}return "Day "+(i+1)}
+function renderStrip(c){
+ var mi=monthInfo(),off=(new Date(mi.Y,mi.M,1).getDay()+6)%7,s='<label>Tap a day to jump to it</label><div class="calhd">'+MFULL[mi.M]+' '+mi.Y+'</div><div class="cal">';
+ for(var e=0;e<off;e++)s+='<div></div>';
+ for(var d=1;d<=mi.dim;d++){
+  var i=d-1,r=c.res[i],wn=WN[(off+d-1)%7],we=(off+d-1)%7>=5?" we":"";
+  if(!r){s+='<div class="cday wk'+we+'"><small>'+wn+'</small><b>'+d+'</b></div>';continue}
+  s+='<button class="cday dot'+we+' '+(r.has?(r.tone>0?"w":(r.tone<0?"l":"z")):"")+'" data-i="'+i+'"><small>'+wn+'</small><b>'+d+'</b><small class="amt">'+(r.any?amt(r.net):"")+'</small></button>';
+ }
+ document.getElementById("strip").innerHTML=s+'</div>';
+}
+document.getElementById("ymonth").addEventListener("change",function(){if(this.value){S.ym=this.value;padDays();save();load()}});
+document.getElementById("strip").addEventListener("click",function(e){var b=e.target.closest(".dot");if(!b)return;var el=document.getElementById("card"+b.dataset.i);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})});
+function update(){
+ var c=calc(),net=c.bal-c.start;
+ var pf=c.gl===0?(c.gp===0?"–":"n/a"):(c.gp/Math.abs(c.gl)).toFixed(2);
+ var apY=0,apN=0,apW=0;S.d.forEach(function(d){d.t.forEach(function(t){if(t.ap==="Yes"){apY++;var vv=num(t.pl);if(isNaN(vv)?num(t.pp)>0:vv>0)apW++}else if(t.ap==="No")apN++})});
+ document.getElementById("stats").innerHTML=
+  hero(c,net)+
+  stat("Total trades",c.tr)+stat("Win rate",c.tr?pct(c.w/c.tr):"–")+
+  stat("Avg win",c.wd?money(c.gp/c.wd):"–","pos")+stat("Avg loss",c.ld?money(c.gl/c.ld):"–","neg")+
+  stat("Profit factor",pf)+stat("Return",c.start?pct(net/c.start):"–",cls(net))+
+  stat("Max drawdown",c.tr?money(c.mdd)+" ("+pct(c.mddp)+")":"–")+stat("Discipline score",pct(c.disc))+stat("A+ sets",(apY+apN)?apY+" of "+(apY+apN)+" ("+pct(apY/(apY+apN))+")":"–")+stat("A+ win rate",apY?pct(apW/apY):"–")+stat("Total pips",c.res.some(function(r){return r.anyp})?fp(c.tp)+" pips":"–",cls(c.tp))+stat("Pips won / lost",c.res.some(function(r){return r.anyp})?"+"+Math.round(c.pw*10)/10+" / "+Math.round(c.pls*10)/10:"–")+stat("Monthly target",num(S.mt)>0?money(net)+" / "+money(num(S.mt))+" ("+pct(net/num(S.mt))+")":"–",cls(net))+stat("Daily target hit",num(S.dt)>0?c.res.filter(function(r){return r.any&&r.net>=num(S.dt)}).length+" days":"–")+stat("টার্গেট পূরণে আর লাগবে",num(S.mt)>0?(net>=num(S.mt)?"🎯 পূরণ হয়েছে":money(num(S.mt)-net)):"–");
+ var h="<tr><th>Week</th><th>Trades</th><th>Wins</th><th>Win %</th><th>Net P/L</th><th>Pips</th></tr>";
+ c.wk.forEach(function(x,i){h+="<tr><td>Week "+(i+1)+"</td><td>"+x.t+"</td><td>"+x.w+"</td><td>"+(x.t?pct(x.w/x.t):"–")+"</td><td class=\""+cls(x.n)+"\">"+money(x.n)+"</td><td class=\""+cls(x.p)+"\">"+(x.p?fp(x.p):"–")+"</td></tr>"});
+ document.getElementById("weeks").innerHTML=h;
+ renderStrip(c);c.res.forEach(function(r,i){var rc=S.d[i].r,ys=rc.filter(function(x){return x===1}).length,ns=rc.filter(function(x){return x===2}).length;document.getElementById("rc"+i).textContent=ys+"✓ "+ns+"✗";
+  var n=document.getElementById("net"+i),pt=[];if(r.any)pt.push(money(r.net)+"  ·  "+money(r.bal));if(r.anyp)pt.push(fp(r.pips)+" pips");var hit=num(S.dt)>0&&r.any&&r.net>=num(S.dt);n.textContent=(hit?"🎯 ":"")+(pt.length?pt.join("  |  "):"–");var tone=r.tone;n.className="net "+cls(tone);
+  document.getElementById("card"+i).classList.toggle("flag",r.hit);document.getElementById("card"+i).classList.toggle("win",tone>0);document.getElementById("card"+i).classList.toggle("loss",tone<0);
+  document.getElementById("warn"+i).style.display=r.hit?"block":"none";
+ });
+}
+
+function build(){
+ var box=document.getElementById("days"),h="";
+ for(var i=0;i<S.d.length;i++){
+  if(i%7===0)h+='<h2>Week '+(Math.floor(i/7)+1)+'</h2>';h+='<div class="card" id="card'+i+'"><div class="dream">Dream big, stay disciplined</div><button class="emo'+emoC(S.d[i].ce)+'" data-i="'+i+'">'+emoI(S.d[i].ce)+' Control your emotion</button><div class="head"><b>'+dayHead(i)+'</b><span class="net" id="net'+i+'">–</span></div>';
+  h+='<details class="pre"><summary>Rules check <b id="rc'+i+'"></b></summary><div class="rules rl" data-i="'+i+'">';for(var k=0;k<6;k++)h+='<button data-k="'+k+'">'+(k+1)+'. '+RULES[k]+'</button>';h+='</div></details>';
+  h+=pre(i);h+='<div class="warn" id="warn'+i+'">Daily loss limit hit – stop trading for the day.</div>';
+  for(var t=0;t<3;t++){
+   h+='<div class="tg"><div class="row trade"><div><label>Trade '+(t+1)+' pair</label><input data-i="'+i+'" data-t="'+t+'" data-f="p" type="text"></div>'+
+   '<div><label>Dir.</label><select data-i="'+i+'" data-t="'+t+'" data-f="d"><option value=""></option><option value="B">Buy</option><option value="S">Sell</option></select></div>'+
+   '<div><label>A+ Set</label><button class="ap'+apc(S.d[i].t[t].ap)+'" data-i="'+i+'" data-t="'+t+'">'+(S.d[i].t[t].ap||"–")+'</button></div>'+
+   '</div><div class="row" style="grid-template-columns:1fr 1fr"><div><label>P/L ($)</label><input data-i="'+i+'" data-t="'+t+'" data-f="pl" type="number" inputmode="decimal" step="any"></div><div><label>Pips (+/-)</label><input data-i="'+i+'" data-t="'+t+'" data-f="pp" type="number" inputmode="decimal" step="any" placeholder="e.g. 25 or -12"></div></div></div>';
+  }
+  h+='<div class="row eod"><div><label>Biggest mistake today</label><textarea data-i="'+i+'" data-f="mk" rows="1" placeholder="Write your biggest mistake"></textarea></div></div>';
+  h+='<div class="row eod"><div><label>Next day focus</label><textarea data-i="'+i+'" data-f="nf" rows="1" placeholder="What will you focus on tomorrow?"></textarea></div></div>';
+  h+='<div class="row eod" style="grid-template-columns:auto 1fr"><div><label>Mood</label><div class="stars" data-i="'+i+'">'+[1,2,3,4,5].map(function(k){return '<button data-k="'+k+'">★</button>'}).join("")+'</div></div>'+
+   '<div><label>Notes</label><textarea data-i="'+i+'" data-f="n" rows="2"></textarea></div></div></div>';
+ }
+ box.innerHTML=h;
+ box.querySelectorAll("[data-f]").forEach(function(el){
+  var i=+el.dataset.i,f=el.dataset.f,t=el.dataset.t;
+  el.value=t!==undefined?(S.d[i].t[+t][f]||""):(S.d[i][f]||"");
+  var ev=el.tagName==="SELECT"?"change":"input";
+  el.addEventListener(ev,function(){if(t!==undefined)S.d[i].t[+t][f]=el.value;else S.d[i][f]=el.value;save();update()});
+ });
+ box.querySelectorAll(".rules").forEach(function(r){
+  var i=+r.dataset.i;
+  function paint(){r.querySelectorAll("button").forEach(function(b){var v=S.d[i].r[+b.dataset.k];b.className=v===1?"y":(v===2?"n":"");})}
+  paint();
+  r.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var k=+b.dataset.k;S.d[i].r[k]=(S.d[i].r[k]+1)%3;save();paint();update()});
+ });
+}
+var st=document.getElementById("start"),ml=document.getElementById("maxl");
+var msel=document.getElementById("msel"),mn=document.getElementById("mname");
+var RULES=["Follow your trading plan","Maximum 3 trades per day","Daily max risk 2%","Stop overtrading","No revenge trading","Focus on discipline, not on profit."];
+var PRE=["Higher-timeframe trend checked","Key support / resistance marked","Setup matches my plan","Stop loss set before entry"];
+function mk(){var b=document.getElementById("mist"),h="";if(!S.wm)S.wm=["","","","",""];for(var w=0;w<5;w++)h+='<label>Week '+(w+1)+' – biggest mistake</label><input data-w="'+w+'" type="text" placeholder="Write your biggest mistake" style="margin-bottom:8px">';b.innerHTML=h;b.querySelectorAll("input").forEach(function(el){el.value=S.wm[+el.dataset.w]||"";el.addEventListener("input",function(){S.wm[+el.dataset.w]=el.value;save()})})}
+function pre(i){return '<details class="pre"><summary>Pre-trade checklist <b id="pc'+i+'"></b></summary><div class="chk" data-i="'+i+'">'+PRE.map(function(t,k){return '<button data-k="'+k+'"><i></i>'+t+'</button>'}).join("")+'</div><div class="note">Any empty box = no trade.</div></details>'}
+function paintChk(w){var i=+w.dataset.i,c=S.d[i].c||[],n=0,x=0;w.querySelectorAll("button").forEach(function(b){var v=+c[+b.dataset.k]||0;if(v===1)n++;if(v===2)x++;b.className=v===1?"on":(v===2?"no":"")});document.getElementById("pc"+i).textContent=n+"/"+PRE.length+(x?" · "+x+"❌":"")+(n===PRE.length?" ✓":"")}
+document.getElementById("days").addEventListener("click",function(e){var b=e.target.closest(".chk button");if(!b)return;var w=b.parentNode,i=+w.dataset.i,k=+b.dataset.k;if(!S.d[i].c)S.d[i].c=[0,0,0,0,0,0];S.d[i].c[k]=((+S.d[i].c[k]||0)+1)%3;save();paintChk(w)});
+document.getElementById("days").addEventListener("click",function(e){var b=e.target.closest(".emo");if(!b)return;var i=+b.dataset.i;S.d[i].ce=((+S.d[i].ce||0)+1)%3;save();b.textContent=emoI(S.d[i].ce)+" Control your emotion";b.className="emo"+emoC(S.d[i].ce)});
+function emoI(v){return v===1?"✅":(v===2?"❌":"⬜")}
+function emoC(v){return v===1?" on":(v===2?" no":"")}
+function apc(v){return v==="Yes"?" y":(v==="No"?" n":"")}
+document.getElementById("days").addEventListener("click",function(e){var b=e.target.closest(".ap");if(!b)return;var i=+b.dataset.i,t=+b.dataset.t,x=S.d[i].t[t];x.ap=x.ap==="Yes"?"No":"Yes";save();b.textContent=x.ap;b.className="ap"+apc(x.ap)});
+function paintStars(w,i){var v=+S.d[i].m||0;w.querySelectorAll("button").forEach(function(b){b.className=(+b.dataset.k<=v)?"on":""})}
+document.getElementById("days").addEventListener("click",function(e){var b=e.target.closest(".stars button");if(!b)return;var w=b.parentNode,i=+w.dataset.i,k=String(b.dataset.k);S.d[i].m=(String(S.d[i].m)===k)?"":k;save();paintStars(w,i)});
+function ask(btn,msg){if(btn._a){clearTimeout(btn._t);btn._a=false;btn.textContent=btn._o;return true}btn._a=true;btn._o=btn.textContent;btn.textContent=msg;btn._t=setTimeout(function(){btn._a=false;btn.textContent=btn._o},4000);return false}
+function fillSel(){msel.innerHTML="";ST.m.forEach(function(m,i){var o=document.createElement("option");o.value=i;o.textContent=m.nm||"Month "+(i+1);msel.appendChild(o)});msel.value=ST.c}
+function load(){S=ST.m[ST.c];if(!S.nm)S.nm="Month "+(ST.c+1);if(!S.ym){var nw=new Date();S.ym=nw.getFullYear()+"-"+String(nw.getMonth()+1).padStart(2,"0")}document.getElementById("ymonth").value=S.ym;padDays();if(window.syncM)syncM();st.value=S.s;ml.value=S.l;mn.value=S.nm;dtg.value=S.dt||"";mtg.value=S.mt||"";syncD();fillSel();mk();build();document.querySelectorAll(".stars").forEach(function(w){paintStars(w,+w.dataset.i)});document.querySelectorAll(".chk").forEach(function(w){paintChk(w)});if(window.lcLoad)window.lcLoad();if(window.updStartK)window.updStartK();update()}
+msel.addEventListener("change",function(){ST.c=+msel.value;load();save()});
+mn.addEventListener("input",function(){S.nm=mn.value;save();msel.options[ST.c].textContent=S.nm||"Month "+(ST.c+1)});
+document.getElementById("newm").addEventListener("click",function(){var b=0;if(!ask(document.getElementById("newm"),"Tap again: start from 0"))return;var n=blank();n.s=b;n.l=S.l;n.dt=S.dt;n.mt=S.mt;n.nm="Month "+(ST.m.length+1);ST.m.push(n);ST.c=ST.m.length-1;load();save();window.scrollTo(0,0)});
+var md=document.getElementById("maxd"),dtg=document.getElementById("dtgt"),mtg=document.getElementById("mtgt");
+dtg.addEventListener("input",function(){S.dt=dtg.value;save();update()});
+mtg.addEventListener("input",function(){S.mt=mtg.value;save();update()});
+function syncD(){var s=num(S.s)||0,p=num(S.l);md.value=isNaN(p)?"":(s*p/100).toFixed(2)}
+md.addEventListener("input",function(){var s=num(S.s)||0,v=num(md.value);if(isNaN(v)||s<=0){S.l="";ml.value=""}else{S.l=String(+(v/s*100).toFixed(2));ml.value=S.l}save();update()});
+st.addEventListener("input",function(){S.s=st.value;syncD();save();update()});
+ml.addEventListener("input",function(){S.l=ml.value;syncD();save();update()});
+document.getElementById("reset").addEventListener("click",function(){
+ if(ask(document.getElementById("reset"),"Tap again to clear this month")){var nm=S.nm,s0=S.s,d0=S.dt,m0=S.mt;S=blank();S.nm=nm;S.s=s0;S.dt=d0;S.mt=m0;save();load()}
+});
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function jlines(){
+ var c=calc(),W=["Mon","Tue","Wed","Thu","Fri"],net=c.bal-c.start,L=[];
+ var pf=c.gl===0?(c.gp===0?"–":"n/a"):(c.gp/Math.abs(c.gl)).toFixed(2);
+ var apY=0,apN=0,apW=0;S.d.forEach(function(d){d.t.forEach(function(t){if(t.ap==="Yes"){apY++;var vv=num(t.pl);if(isNaN(vv)?num(t.pp)>0:vv>0)apW++}else if(t.ap==="No")apN++})});
+ L.push(["h1","Mahfuj’s Trading Journal – "+S.nm+(calLbl()?" ("+calLbl()+")":"")],["h2","Monthly numbers"]);
+ [["Starting balance",money(c.start)],["Ending balance",money(c.bal)],["Net P/L",money(net)],["Total pips",fp(c.tp)+" pips"],["Daily profit target",num(S.dt)>0?money(num(S.dt)):"–"],["Total profit target",num(S.mt)>0?money(num(S.mt))+" ("+pct(net/num(S.mt))+" done)":"–"],["Remaining to target",num(S.mt)>0?(net>=num(S.mt)?"Reached":money(num(S.mt)-net)):"–"],["Total trades",c.tr],["Win rate",c.tr?pct(c.w/c.tr):"–"],["Avg win",c.w?money(c.gp/c.w):"–"],["Avg loss",c.l?money(c.gl/c.l):"–"],["Profit factor",pf],["Max drawdown",c.tr?money(c.mdd)+" ("+pct(c.mddp)+")":"–"],["Discipline score",pct(c.disc)],["Max daily loss",(num(S.l)||0)+"% ("+money(c.start*(num(S.l)||0)/100)+")"],["A+ sets",(apY+apN)?apY+" of "+(apY+apN)+" ("+pct(apY/(apY+apN))+")":"–"],["A+ win rate",apY?pct(apW/apY):"–"]].forEach(function(r){L.push(["t",r[0]+": "+r[1]])});
+ L.push(["h2","Weekly review"]);
+ c.wk.forEach(function(x,i){L.push(["t","Week "+(i+1)+": "+x.t+" trades, "+x.w+" wins, Net "+money(x.n)+", Pips "+fp(x.p)]);if(S.wm&&S.wm[i])L.push(["t","   Biggest mistake: "+S.wm[i]])});
+ L.push(["h2","Daily journal"]);
+ var any=false;
+ S.d.forEach(function(d,i){
+  var r=c.res[i],rl=d.r.map(function(x,k){return x?(k+1)+". "+RULES[k]+" "+(x===1?"✓":"✗"):""}).filter(Boolean),
+   ck=(d.c||[]).slice(0,PRE.length).filter(function(v){return v===1}).length,ckx=(d.c||[]).slice(0,PRE.length).filter(function(v){return v===2}).length,
+   tl=d.t.map(function(t,k){return (t.p||t.d||t.ap||t.pl||t.pp)?"Trade "+(k+1)+": "+t.p+" "+t.d+(t.ap?" A+ "+t.ap:"")+(t.pl?" P/L "+t.pl:"")+(t.pp?" Pips "+t.pp:""):""}).filter(Boolean),
+   m=+d.m||0;
+  if(!(r.any||rl.length||ck||ckx||tl.length||m||d.mk||d.nf||d.n||d.ce))return;
+  any=true;
+  L.push([r.has?(r.tone<0?"n":"p"):"b",dayHead(i)+(r.any?"  |  Net P/L "+money(r.net)+"  |  Balance "+money(r.bal):"")+(r.anyp?"  |  Pips "+fp(r.pips):"")+(num(S.dt)>0&&r.any&&r.net>=num(S.dt)?"  🎯":"")]);
+  tl.forEach(function(t){L.push(["t",t])});
+  rl.forEach(function(t){L.push(["t","Rule "+t])});
+  if(ck||ckx)L.push(["t","Pre-trade checklist: "+ck+"/"+PRE.length+(ckx?" ("+ckx+" ✗ not followed)":"")]);
+  if(d.ce)L.push(["t",d.ce===2?"✗ Did not control emotion":"✓ Control your emotion"]);
+  if(m)L.push(["t","Mood: "+"★".repeat(m)+"☆".repeat(5-m)]);
+  if(d.mk)L.push(["t","Biggest mistake: "+d.mk]);
+  if(d.nf)L.push(["t","Next day focus: "+d.nf]);
+  if(d.n)L.push(["t","Notes: "+d.n]);
+  L.push(["gap",""]);
+ });
+ if(!any)L.push(["t","No entries yet."]);
+ return L;
+}
+function jpng(cb){
+ var lines=jlines(),W=900,pad=24,cv=document.createElement("canvas"),x=cv.getContext("2d"),F='Arial, "Noto Sans Bengali", sans-serif';
+ var st={h1:[22,"bold","#111827"],h2:[17,"bold","#1f2937"],t:[15,"","#111827"],b:[16,"bold","#111827"],p:[16,"bold","#15803d"],n:[16,"bold","#b91c1c"],gap:[8,"","#000"]};
+ function wrap(t,font,max){x.font=font;var out=[],cur="";String(t).split(" ").forEach(function(w){var tt=cur?cur+" "+w:w;if(x.measureText(tt).width>max&&cur){out.push(cur);cur=w}else cur=tt});out.push(cur);return out}
+ var items=[],y=pad;
+ lines.forEach(function(l){var s=st[l[0]],font=(s[1]?s[1]+" ":"")+s[0]+"px "+F,lh=Math.round(s[0]*1.5),ws=l[0]==="gap"?[""]:wrap(l[1],font,W-2*pad);
+  if(l[0]==="h2")y+=12;
+  ws.forEach(function(w,j){items.push([w,font,s[2],y+Math.round(lh*0.75),(l[0]==="h2"&&j===ws.length-1)?y+lh:0]);y+=lh})});
+ var H=y+pad,SC=Math.max(1,Math.min(2,Math.floor(Math.sqrt(12000000/(W*H))*10)/10));cv.width=Math.round(W*SC);cv.height=Math.round(H*SC);x=cv.getContext("2d");x.scale(SC,SC);
+ x.fillStyle="#ffffff";x.fillRect(0,0,W,H);
+ items.forEach(function(it){x.font=it[1];x.fillStyle=it[2];x.fillText(it[0],pad,it[3]);if(it[4]){x.fillRect(pad,it[4]-2,W-2*pad,2)}});
+ cv.toBlob(function(b){cb(b,cv)},"image/png");
+}
+var HAS=false,DM=null;
+function mkpdf(pages){
+ var enc=new TextEncoder(),chunks=[],off=[],len=0,np=pages.length,pw=595;
+ function put(x){var b=typeof x==="string"?enc.encode(x):x;chunks.push(b);len+=b.length}
+ function obj(n,body){off[n]=len;put(n+" 0 obj\n"+body+"\nendobj\n")}
+ put("%PDF-1.4\n");
+ obj(1,"<< /Type /Catalog /Pages 2 0 R >>");
+ var kids=[];for(var k=0;k<np;k++)kids.push((3+3*k)+" 0 R");
+ obj(2,"<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+np+" >>");
+ pages.forEach(function(p,k){var ph=Math.round(pw*p.h/p.w),cs="q "+pw+" 0 0 "+ph+" 0 0 cm /Im0 Do Q";
+  obj(3+3*k,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+pw+" "+ph+"] /Resources << /XObject << /Im0 "+(5+3*k)+" 0 R >> >> /Contents "+(4+3*k)+" 0 R >>");
+  obj(4+3*k,"<< /Length "+cs.length+" >>\nstream\n"+cs+"\nendstream");
+  off[5+3*k]=len;put((5+3*k)+" 0 obj\n<< /Type /XObject /Subtype /Image /Width "+p.w+" /Height "+p.h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+p.bytes.length+" >>\nstream\n");put(p.bytes);put("\nendstream\nendobj\n")});
+ var xr=len,total=3+3*np,x="xref\n0 "+total+"\n0000000000 65535 f \n";
+ for(var n=1;n<total;n++)x+=("0000000000"+off[n]).slice(-10)+" 00000 n \n";
+ put(x+"trailer\n<< /Size "+total+" /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
+ return new Blob(chunks,{type:"application/pdf"});
+}
+function jpdf(cb){
+ jpng(function(b,cv){
+  if(!b){cb(null);return}
+  var W=cv.width,PH=Math.round(W*1.4142),n=Math.max(1,Math.ceil(cv.height/PH)),pages=[];
+  for(var k=0;k<n;k++){var pc=document.createElement("canvas");pc.width=W;pc.height=PH;var x=pc.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,W,PH);x.drawImage(cv,0,k*PH,W,PH,0,0,W,PH);
+   var bin=atob(pc.toDataURL("image/jpeg",0.92).split(",")[1]),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);pages.push({bytes:u,w:W,h:PH})}
+  cb(mkpdf(pages));
+ });
+}
+function ov(h){var o=document.getElementById("ov");if(!o){o=document.createElement("div");o.id="ov";o.style.cssText="position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;padding:12px;padding-top:calc(12px + env(safe-area-inset-top,0px))";document.body.appendChild(o)}o.innerHTML='<button class="reset" id="ovx" style="margin:0 0 10px;width:100%">✕ Close</button>'+h;o.style.display="block";o.scrollTop=0;document.getElementById("ovx").onclick=function(){o.style.display="none"};var cc=document.getElementById("cc");if(cc)cc.onclick=function(){var t=document.getElementById("ct"),ok=false;t.select();t.setSelectionRange(0,999999);try{ok=document.execCommand("copy")}catch(e){}cc.textContent=ok?"Copied ✓":"Select all and copy manually"}}
+try{if(window.claude&&claude.use){claude.use("downloads").then(function(m){if(!m)return;HAS=true;DM=m;}).catch(function(){})}}catch(e){}
+document.getElementById("dl2").addEventListener("click",function(){var b2=document.getElementById("dl2"),lab=b2.textContent,nm=(S.nm||"month").replace(/[^A-Za-z0-9_-]+/g,"-"),fn="journal-"+nm+(calLbl()?"_"+calLbl():"")+".pdf";
+ function msg(t,ms){b2.textContent=t;setTimeout(function(){b2.textContent=lab},ms||2500)}
+ b2.textContent="Making PDF…";
+ jpdf(function(blob){if(!blob){msg("Could not make PDF",3000);return}
+  if(DM){DM.save({filename:fn,data:blob}).then(function(){msg("Saved ✓")},function(e){msg(e&&e.code==="declined"?lab:"Could not save, try again",3000)});return}
+  if(window.self!==window.top){jpng(function(b){var r=new FileReader();r.onload=function(){ov('<img src="'+r.result+'" style="width:100%;border:1px solid var(--bd)"><p class="sub">Long-press the image, then tap Download image (or take a screenshot).</p>');b2.textContent=lab};r.readAsDataURL(b)});return}
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},500);msg("Saved ✓")})});
+document.getElementById("dl").addEventListener("click",function(){var b2=document.getElementById("dl"),lab=b2.textContent,nm=(S.nm||"month").replace(/[^A-Za-z0-9_-]+/g,"-"),fn="journal-"+nm+(calLbl()?"_"+calLbl():"")+".png";
+ function msg(t,ms){b2.textContent=t;setTimeout(function(){b2.textContent=lab},ms||2500)}
+ b2.textContent="Making image…";
+ jpng(function(blob){if(!blob){msg("Could not make image",3000);return}
+  if(DM){DM.save({filename:fn,data:blob}).then(function(){msg("Saved ✓")},function(e){msg(e&&e.code==="declined"?lab:"Could not save, try again",3000)});return}
+  if(window.self!==window.top){var r=new FileReader();r.onload=function(){ov('<img src="'+r.result+'" style="width:100%;border:1px solid var(--bd)"><p class="sub">Long-press the image, then tap Download image (or take a screenshot).</p>');b2.textContent=lab};r.readAsDataURL(blob);return}
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},500);msg("Saved ✓")})});
+(function(){
+const S=[
+ {n:"Sydney",tz:"Australia/Sydney",h:7,c:"#00608f"},
+ {n:"Tokyo",tz:"Asia/Tokyo",h:9,c:"#00608f"},
+ {n:"London",tz:"Europe/London",h:8,c:"#00608f"},
+ {n:"New York",tz:"America/New_York",h:8,c:"#00608f"}
+];
+const DUR=540;
+const zones=[["Asia/Dhaka","বাংলাদেশ (Dhaka)"],["Asia/Kolkata","ভারত"],["Asia/Dubai","দুবাই"],["Asia/Riyadh","সৌদি আরব"],["Asia/Kuala_Lumpur","মালয়েশিয়া"],["Asia/Singapore","সিঙ্গাপুর"],["Europe/London","লন্ডন"],["America/New_York","নিউ ইয়র্ক"],["UTC","UTC"]];
+const sel=document.getElementById("mstz");
+let dflt="Asia/Dhaka";
+try{const b=Intl.DateTimeFormat().resolvedOptions().timeZone;if(b&&!zones.some(z=>z[0]===b))zones.unshift([b,b+" (আপনার ডিভাইস)"]);else if(b)dflt=b}catch(e){}
+zones.forEach(z=>{const o=document.createElement("option");o.value=z[0];o.textContent=z[1];sel.appendChild(o)});
+sel.value=dflt;
+function parts(d,tz){const p={};new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric"}).formatToParts(d).forEach(x=>p[x.type]=+x.value);return p}
+function off(d,tz){const p=parts(d,tz);return (Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute)-Math.floor(d.getTime()/60000)*60000)/60000}
+function fmt(m){m=((m%1440)+1440)%1440;let h=Math.floor(m/60),mi=m%60,s=h<12?"am":"pm";h=h%12||12;return h+":"+String(mi).padStart(2,"0")+s}
+function render(){
+ const tz=sel.value,now=new Date(),ov=off(now,tz);
+ const p=parts(now,tz),nm=p.hour*60+p.minute;
+ // axis
+ const ax=document.getElementById("msaxis");ax.innerHTML="";
+ for(let h=0;h<24;h+=4){const s=document.createElement("span");s.style.left=(h/24*100)+"%";s.textContent=(h%12||12)+(h<12?"am":"pm");ax.appendChild(s)}
+ const rows=document.getElementById("msrows");rows.innerHTML="";
+ for(let h=2;h<24;h+=2){const g=document.createElement("div");g.className="msgrid";g.style.left=(h/24*100)+"%";rows.appendChild(g)}
+ const list=document.getElementById("mslist");list.innerHTML="";
+ S.forEach((s,i)=>{
+  const co=off(now,s.tz),cp=parts(now,s.tz);
+  const startUtc=Date.UTC(cp.year,cp.month-1,cp.day,s.h,0)-co*60000;
+  const startMin=((Math.floor(startUtc/60000)+ov)%1440+1440)%1440;
+  const rel=((nm-startMin)%1440+1440)%1440;
+  let open=false;
+  for(let k=-1;k<=0;k++){const wd=new Date(Date.UTC(cp.year,cp.month-1,cp.day+k)).getUTCDay();if(wd<1||wd>5)continue;const st=Date.UTC(cp.year,cp.month-1,cp.day+k,s.h,0)-co*60000;if(now.getTime()>=st&&now.getTime()<st+DUR*60000)open=true}
+  const row=document.createElement("div");row.className="msrow";row.style.top=(6+i*35)+"px";
+  const a=Math.min(DUR,1440-startMin);
+  const mk=(l,w)=>{const d=document.createElement("div");d.className="msseg"+(open?" open":"");d.style.background=open?s.c:s.c+"44";d.style.borderColor=s.c;d.style.left=(l/1440*100)+"%";d.style.width=(w/1440*100)+"%";row.appendChild(d)};
+  mk(startMin,a);if(a<DUR)mk(0,DUR-a);
+  const lb=document.createElement("div");lb.className="mslbl";
+  lb.style.left=((a>=DUR/2||startMin===0?startMin:0)/1440*100)+"%";
+  lb.style.color=open?"#fff":"var(--tx)";
+  const cm=cp.hour*60+cp.minute;
+  lb.innerHTML="<b>"+s.n+"</b>"+fmt(cm);
+  row.appendChild(lb);rows.appendChild(row);
+  const it=document.createElement("div");it.className="msit";
+  it.innerHTML="<div><b>"+s.n+"</b><small>"+fmt(startMin)+" – "+fmt(startMin+DUR)+"</small></div><span class='msbadge"+(open?" on":"")+"'>"+(open?"খোলা":"বন্ধ")+"</span>";
+  it.style.borderLeft="5px solid "+s.c;list.appendChild(it);
+ });
+ const n=document.createElement("div");n.className="msnow";n.style.left=(nm/1440*100)+"%";rows.appendChild(n);
+}
+sel.onchange=render;render();setInterval(render,30000);
+})();
+(function(){var el=document.getElementById("ty");if(!el)return;var T="MAHFUJ TRADING LOG",i=0;
+ if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){el.textContent=T;return}
+ function dust(done){
+  var chars=T.split(""),L=[],fr=document.createDocumentFragment();
+  el.textContent="";el.classList.add("dusting");
+  chars.forEach(function(c,k){var f=k/(chars.length-1),col="rgb("+Math.round(56+199*f)+","+Math.round(189-112*f)+","+Math.round(248-139*f)+")",sp=document.createElement("span");
+   sp.className="dl";sp.textContent=c===" "?"\u00a0":c;sp.style.color=col;fr.appendChild(sp);L.push([sp,col])});
+  el.appendChild(fr);
+  L.forEach(function(x,k){var sp=x[0],wind=60+Math.random()*90;
+   sp.style.setProperty("--d",(k*0.06).toFixed(2)+"s");sp.style.setProperty("--dx",wind+"px");sp.style.setProperty("--dy",(-30-Math.random()*70)+"px");sp.style.setProperty("--r",(Math.random()*60-30)+"deg");
+   if(sp.textContent!=="\u00a0")for(var q=0;q<4;q++){var p=document.createElement("span");p.className="dp";p.style.background=x[1];
+    p.style.left=(sp.offsetLeft+Math.random()*sp.offsetWidth)+"px";p.style.top=(sp.offsetTop+Math.random()*sp.offsetHeight*0.8)+"px";
+    p.style.setProperty("--d",(k*0.06+Math.random()*0.3).toFixed(2)+"s");p.style.setProperty("--dx",(wind+Math.random()*120)+"px");p.style.setProperty("--dy",(-60-Math.random()*110)+"px");p.style.setProperty("--r","0deg");el.appendChild(p)}});
+  setTimeout(function(){el.classList.remove("dusting");el.textContent="";done()},chars.length*60+1600);
+ }
+ function step(){i++;el.textContent=T.slice(0,i);
+  if(i>=T.length){setTimeout(function(){dust(function(){i=0;setTimeout(step,1200)})},3500);return}
+  setTimeout(step,130)}
+ el.textContent="";setTimeout(step,500)})();
+var TOUR=[
+["স্বাগতম! 👋","এটা আপনার <b>২০ দিনের ট্রেডিং জার্নাল</b>। প্রতিদিনের ট্রেড, নিয়ম মানা আর মনের অবস্থা লিখে রাখলে নিজের ভুল ধরা সহজ হয়। চলুন ছোট করে দেখে নিই কোথায় কী আছে।"],
+["মাস বেছে নিন","সবার উপরে <b>Month</b> ঘর। প্রতি মাসের আলাদা লগ থাকে। মাস শেষে <b>+ New month</b> চাপলে নতুন ২০ দিনের লগ খুলবে, আর নতুন মাস ০ থেকে শুরু হবে। মাসের নাম বদলাতেও পারবেন।"],
+["ব্যালেন্স ও লস সীমা","<b>Starting balance</b> এ আপনার ব্যালেন্স দিন। <b>Max daily loss</b> % বা $ যেকোনোটায় দিতে পারেন, অন্যটা নিজে হিসাব হবে। কোনো দিনের লস এই সীমায় পৌঁছালে সেই দিনের কার্ড লাল হয়ে সতর্ক করবে। <b>Daily / Total profit target</b> ঘরে টার্গেট লিখুন, টার্গেট ছুঁলে দিনের পাশে 🎯 আসবে আর ব্যালেন্স কার্ডে অগ্রগতির বার দেখাবে।"],
+["নম্বর ও ক্যালেন্ডার","<b>Monthly numbers</b> এ ব্যালেন্স, গ্রাফ, Win rate, Profit factor সব নিজে নিজে হিসাব হয়। ২০ দিনের ক্যালেন্ডারে প্রফিটের দিন <b>সবুজ</b>, লসের দিন <b>লাল</b>, আর ঘরে ট্যাপ করলে সেই দিনের কার্ডে চলে যাবেন।"],
+["মার্কেট সেশন","<b>ফরেক্স মার্কেট সেশন</b> অংশে Sydney, Tokyo, London ও New York বাজার কখন খোলা তা আপনার সময় অনুযায়ী দেখায়। সবুজ রেখা = এখনকার সময়, গাঢ় বার = সেশন খোলা। উপরের ঘর থেকে আপনার দেশের সময় বেছে নিন।"],
+["লট সাইজ ক্যালকুলেটর","<b>🧮 লট সাইজ ক্যালকুলেটর</b> অংশে কয়টা ট্রেড নেবেন, Stop loss (pips) লিখে একটা রিস্ক মোড (Safe / Medium Risk / High Risk) বাছলে (এমাউন্ট ও ঝুঁকি % নিজে থেকে <b>Starting balance</b> ও <b>Max daily loss (%)</b> থেকে আসবে), প্রতি ট্রেডে কত লট নেওয়া ভালো তা বলে দেবে। নিচের তালিকায় বেশি এমাউন্টে কত লট হবে সেটাও দেখাবে।"],
+["দিনের কার্ড (১)","প্রতিদিনের কার্ডে উপর থেকে: <b>Control your emotion</b> আবেগ ধরে রাখতে পারলে ট্যাপ করুন ✅। <b>Rules check</b> খুলে প্রতিটা নিয়মে একবার ট্যাপ = ✓ মেনেছি, দুবার = ✗ ভেঙেছি। <b>Pre-trade checklist</b> ট্রেডের আগে মিলিয়ে নিন: একবার ট্যাপ = ✓ মেনেছি, দুবার = ❌ মানিনি। ফাঁকা বা ❌ থাকলে ট্রেড নয়।"],
+["দিনের কার্ড (২)","ট্রেডের ঘরে <b>Pair</b> লিখুন (যেমন XAUUSD), <b>Dir.</b> এ B = কিনেছি, S = বিক্রি। <b>A+ Set</b> এ সেরা সেটআপ হলে ট্যাপ করুন (একবার Yes, আবার No)। <b>P/L ($)</b> এ লাভ বা লস লিখুন, আর <b>Pips</b> এ কত পিপস লাভ বা লস হলো লিখুন। লস হলে দুটোতেই আগে মাইনাস (-) দিন। দিনে সর্বোচ্চ ৩টি ট্রেড।"],
+["দিন শেষে","<b>Biggest mistake</b> এ আজকের সবচেয়ে বড় ভুল, <b>Next day focus</b> এ কাল কোন বিষয়ে মনোযোগ দেবেন, <b>Mood</b> এ তারা (১ = মন খারাপ/রাগ, ৫ = শান্ত), আর <b>Notes</b> এ যা ইচ্ছা লিখুন। সব লেখা এই ফোনের ব্রাউজারে নিজে থেকে সেভ হয়।"],
+["জার্নাল সেভ করুন","উপরের <b>Download PDF</b> ও <b>Download image</b> বাটনে চাপলে পুরো মাসের জার্নাল সেভ হবে। অন্য ফোন বা ব্রাউজারে লগ নিতে চাইলে <b>Backup</b> বাটনে ফাইল নিয়ে সেখানে <b>Restore</b> দিন। পরে যেকোনো সময় বাম নিচের <b>?</b> বাটনে চাপলে এই গাইড আবার দেখতে পারবেন। শুভ ট্রেডিং! 🚀"]];
+function tour(i){var o=document.getElementById("tour");if(!o){o=document.createElement("div");o.id="tour";document.body.appendChild(o)}
+ if(i>=TOUR.length){o.style.display="none";try{localStorage.setItem("mh-tour-done","1")}catch(e){}return}
+ var t=TOUR[i];o.style.display="flex";
+ o.innerHTML='<div class="tbox"><div class="tstep">'+(i+1)+' / '+TOUR.length+'</div><h3>'+t[0]+'</h3><p>'+t[1]+'</p><div class="tbtn"><button class="tskip">বাদ দিন</button><button class="tnext">'+(i===TOUR.length-1?"শুরু করি":"পরের ধাপ →")+'</button></div></div>';
+ o.querySelector(".tskip").onclick=function(){tour(99)};o.querySelector(".tnext").onclick=function(){tour(i+1)};
+}
+(function(){
+ var bk=document.getElementById("bk"),rs=document.getElementById("rs"),rf=document.getElementById("rsf");if(!bk||!rs||!rf)return;
+ var pend=null;
+ function stamp(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+ function flash(b,t,ms){if(b._o==null)b._o=b.textContent;b.textContent=t;clearTimeout(b._f);b._f=setTimeout(function(){b.textContent=b._o;b._o=null},ms||3000)}
+ bk.addEventListener("click",function(){
+  save();var txt=JSON.stringify({app:"mahfuj-trading-log",v:1,saved:new Date().toISOString(),data:ST}),fn="trading-log-backup-"+stamp()+".json",blob=new Blob([txt],{type:"application/json"});
+  if(DM){DM.save({filename:fn,data:blob}).then(function(){flash(bk,"Saved ✓")},function(e){if(!(e&&e.code==="declined"))flash(bk,"Could not save")});return}
+  if(window.self!==window.top){ov('<p class="sub">সব লেখা কপি করে নিরাপদ জায়গায় রাখুন (যেমন নোট অ্যাপে)। এটাই আপনার ব্যাকআপ।</p><textarea id="ct" readonly style="width:100%;height:50vh;font:12px monospace;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:8px">'+esc(txt)+'</textarea><button class="reset" id="cc" style="width:100%;margin:8px 0 0">Copy all</button>');return}
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},500);flash(bk,"Saved ✓")});
+ function apply(){ST=pend;if(!(ST.c>=0&&ST.c<ST.m.length))ST.c=0;pend=null;rs._armed=false;save();load();flash(rs,"Restored ✓",3000);window.scrollTo(0,0)}
+ rs.addEventListener("click",function(){if(pend&&rs._armed){apply();return}rf.value="";rf.click()});
+ rf.addEventListener("change",function(){var f=rf.files&&rf.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var o=JSON.parse(r.result),d=o&&o.data?o.data:o;
+    if(!d||!Array.isArray(d.m)||!d.m.length||!d.m.every(function(m){return m&&Array.isArray(m.d)&&m.d.length>=20}))throw 0;
+    pend=d;rs._armed=true;flash(rs,"Tap again to restore "+d.m.length+" month(s)",6000);setTimeout(function(){pend=null;rs._armed=false},6000)}
+   catch(e){flash(rs,"Invalid backup file",3500)}};
+  r.readAsText(f)});
+})();
+(function(){
+ var E={};["lct","lcs","lci","lcp","lcn","lcnw"].forEach(function(k){E[k]=document.getElementById(k)});var out=document.getElementById("lcout");if(!out||!E.lcp)return;
+ var INST={eurusd:10,gbpusd:10,audusd:10,nzdusd:10,xauusd:10,usdjpy:6.5,gbpjpy:6.5,eurjpy:6.5,usdcad:7.4,usdchf:11,btcusd:1,us30:1,nas100:1};
+ var MODES={safe:{s:1/3,l:"Safe"},medium:{s:2/3,l:"Medium Risk"},high:{s:1,l:"High Risk"}};
+ var PLAN={"1":{name:"Phase 1"},"2":{name:"Phase 2"},"live":{d:20,name:"Instant"}};
+  function dailyNow(){
+  var b=(num(startEl.value)||10000)/10000,pc=Number(opt),base=pc*10;
+  return Math.round(base*b*100)/100;
+ }
+ var mode="medium",acct="live",ph="1",opt="10",pt="2",dc="7",dr="0.5";
+ var dtgt=document.getElementById("dtgt"),mtgt=document.getElementById("mtgt"),maxdEl=document.getElementById("maxd"),startEl=document.getElementById("start");
+ function lotCalc(b,t,r,sl,pv){var tot=b*r/100,per=tot/t,raw=per/(sl*pv);return {tot:tot,per:per,raw:raw,lot:Math.floor(raw*100+1e-9)/100}}
+ function lt(x){return x>=0.01?x.toFixed(2):"<0.01"}
+ function pipVal(){return num(E.lcp.value)||10}
+ function renderProp(){
+  var box=document.getElementById("propbox");
+  if(acct!=="prop"){box.style.display="none";return}
+  box.style.display="";
+  var P=PLAN[ph],T=num(mtgt.value),ml=num(maxdEl.value),h="",d;
+  if(!(T>0)){box.innerHTML='<div class="lcln">Enter a total profit target to see how many days it will take.</div>';return}
+  if(ph==="live"){
+   d=T/P.d;
+   h+='<div class="lcln"><b>'+(pt==="i"?"Instant":"Prop Live")+'</b> · Monthly target <b>$'+money(T)+'</b> ('+(pt==="i"?dr+'% of balance x 20 days':'5% of balance')+')</div>';
+   h+='<div class="lcln">Daily target <b>$'+money(d)+'</b> ('+(pt==="i"?dr+'% of balance':P.d+' days')+')</div>';
+   h+='<div class="lcln">To keep the funded account safe, do not trade beyond the target and do not raise the daily loss limit.</div>';
+  } else {
+   d=dailyNow();
+   var n=Math.ceil(T/d);
+   h+='<div class="lcln"><b>'+P.name+'</b> · Target <b>$'+money(T)+'</b></div>';
+   h+='<div class="lcln">Daily target <b>$'+money(d)+'</b> → about <b>'+n+' days</b> to hit target</div>';
+   h+='<div class="lcln">Once the daily target is hit, stop trading for the day.'+(ph==="2"?' Phase 2 is usually harder, so staying steady is best.':'')+'</div>';
+   h+='<div class="lcln">Prop firms often require a minimum number of trading days (often 4). Check your firm’s rules.</div>';
+  }
+  if(ph==="live"&&pt==="i"){var pdays=profitDays(),tg=Number(dc);h+='<div class="lcln">লাভের দিন: <b>'+pdays.n+' / '+tg+'</b> (দিনের ব্যালেন্সের '+dr+'% লাভ হলে দিন গোনা হবে) · '+(pdays.n>=tg?'টার্গেট পূর্ণ হয়েছে':(tg-pdays.n)+' দিন বাকি')+'</div>';}
+  if(ml>0&&d>ml)h+='<div class="lcwarn">⚠ Daily target is higher than Max daily loss. Extend the time.</div>';
+  box.innerHTML=h;
+ }
+ function render(){
+  renderProp();
+  var b=num(document.getElementById("start").value),maxl=num(document.getElementById("maxl").value),t=num(E.lct.value),sl=num(E.lcs.value),pv=pipVal();
+  var mp=MODES[mode];
+  var maxd=num(maxdEl.value);
+  var dayCap=maxd>0?maxd:(maxl>0&&b>0?b*maxl/100:0);
+  var r=(b>0&&dayCap>0)?(dayCap*mp.s)/b*100:0;
+  if(!(b>0&&t>0&&r>0&&sl>0&&pv>0)){out.innerHTML='<div class="nmsg" style="padding:6px 2px;color:var(--mut)">Lot size will appear once starting balance, trades, stop loss and instrument are set.</div>';return}
+  var c=lotCalc(b,t,r,sl,pv),use=c.lot>=0.01?c.lot:0.01,risk=use*sl*pv,h="";
+  h+='<div class="lcbig"><span>Lot size per trade</span><b>'+use.toFixed(2)+'</b><span>'+t+' trades, each</span></div>';
+  h+='<div class="lcln">'+mp.l+' mode ('+Math.round(mp.s*100)+'% of Max daily loss): total daily risk <b>'+money(c.tot)+'</b> → risk per trade <b>'+money(c.per)+'</b></div>';
+  if(dayCap>0)h+='<div class="lcln">Max daily loss: <b>'+money(dayCap)+'</b></div>';
+  h+='<div class="lcln">'+sl+' pips stop loss, one trade loses about <b>'+money(risk)+'</b>. 1:2 target ('+(sl*2)+' pips) profit about <b>'+money(risk*2)+'</b>।</div>';
+  if(c.lot<0.01)h+='<div class="lcwarn">⚠ At this amount the calculated lot is below 0.01. Taking the minimum 0.01 makes the risk '+money(0.01*sl*pv)+' which is more than your set '+money(c.per)+' . Take fewer trades, use a smaller stop loss, or increase the amount.</div>';
+  h+='<table><tr><th>Amount</th><th>Risk/trade</th><th>Lot/trade</th></tr>';
+  var d2=lotCalc(b,t,r,sl,pv);h+='<tr style="font-weight:800"><td>'+money(b)+' ← yours</td><td>'+money(d2.per)+'</td><td>'+lt(d2.lot)+'</td></tr>';
+  h+='</table>';
+  out.innerHTML=h;
+ }
+ function store(){S.lot={t:E.lct.value,s:E.lcs.value,i:E.lci.value,p:E.lcp.value,n:E.lcn.value,m:mode,a:acct,ph:ph,o:opt,pt:pt,dc:dc,dr:dr};save()}
+ function badgeText(){
+  if(acct!=="prop")return "Live Capital";
+  if(pt==="i")return "Prop Firm · Instant";
+  var t=pt==="1"?"1-Step":"2-Step";
+  var p=ph==="live"?"Prop Live":"Phase "+ph;
+  return "Prop Firm · "+t+" · "+p;
+ }
+ function markBtns(){
+  var bd=document.getElementById("acctbadge");if(bd)bd.textContent=badgeText();
+  document.querySelectorAll("#drs button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-dr")===dr)});
+  document.querySelectorAll("#dcs button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-dc")===dc)});
+  document.querySelectorAll("#lcpt button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-pt")===pt)});
+  var tp=document.getElementById("tpct");if(tp)tp.textContent=acct==="prop"?(ph==="live"?"= 5%":"= "+opt+"%"):"";
+  document.querySelectorAll("#lcm button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-m")===mode)});
+  document.querySelectorAll("#lca button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-a")===acct)});
+  document.querySelectorAll("#lcph button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-ph")===ph)});
+  document.querySelectorAll("#tpick button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-p")===opt)});
+ }
+ function sync(){
+  E.lcnw.style.display=E.lci.value==="custom"?"":"none";
+  var pr=acct==="prop";
+  document.getElementById("lcpt").style.display=pr?"":"none";
+  document.getElementById("lcph").style.display=(pr&&pt!=="i")?"":"none";
+  document.querySelector('#lcph [data-ph="2"]').style.display=pt==="2"?"":"none";
+  document.getElementById("mindw").style.display=(pr&&pt==="i")?"":"none";
+  if(!(pr&&ph!=="live"))document.getElementById("tpick").style.display="none";
+  document.querySelectorAll("#tpick button").forEach(function(x){var pc=Number(x.getAttribute("data-p"));x.style.display=allowedPcts().indexOf(pc)>=0?"":"none"});
+ }
+ function refreshPick(){
+  var b=num(startEl.value);
+  document.querySelectorAll("#tpick button").forEach(function(x){
+   var pc=Number(x.getAttribute("data-p"));
+   x.textContent=b>0?pc+"% · $"+Math.round(b*pc/100):pc+"%";
+  });
+ }
+ function applyProp(){
+  if(acct!=="prop"||ph==="live")return;
+  var b=num(startEl.value);if(!(b>0))return;
+  opt=snapPct(Number(opt));
+  var T=Math.round(b*Number(opt)/100*100)/100;
+  mtgt.value=T;S.mt=String(T);
+  var d=dailyNow();dtgt.value=d;S.dt=String(d);setLossFromDaily(d);save();
+  refreshPick();
+  if(typeof update==="function")update();
+ }
+ function autoTarget(){
+  if(acct!=="prop")return;
+  if(ph==="live"){
+   var b=num(startEl.value);if(!(b>0))return;
+   var d=pt==="i"?Math.round(b*Number(dr)/100*100)/100:Math.round(b*0.05/PLAN.live.d*100)/100;
+   var T=pt==="i"?Math.round(d*PLAN.live.d*100)/100:Math.round(b*0.05*100)/100;mtgt.value=T;S.mt=String(T);
+   dtgt.value=d;S.dt=String(d);setLossFromDaily(d);save();
+   if(typeof update==="function")update();
+   return;
+  }
+  if(!(num(startEl.value)>0)){startEl.value="10000";S.s="10000";if(window.updStartK)window.updStartK()}
+  applyProp();
+ }
+ startEl.addEventListener("input",function(){if(acct==="prop"&&ph!=="live")applyProp();refreshPick()});
+ function setLossFromDaily(d){
+  var bal=num(startEl.value);if(!(d>0)||!(bal>0))return;
+  S.l=String(+(d/bal*100).toFixed(2));
+  document.getElementById("maxl").value=S.l;
+  if(typeof syncD==="function")syncD();
+ }
+ function allowedPcts(){
+  if(pt==="2")return ph==="2"?[8,6,5,4]:[10,8,6];
+  return [12,10,9,8,7,6];
+ }
+ function snapPct(v){var a=allowedPcts(),best=a[0];a.forEach(function(x){if(Math.abs(x-v)<Math.abs(best-v))best=x});return String(best)}
+ function setPT(n){
+  pt=n;
+  if(n==="1")ph="1";
+  if(n==="i")ph="live";
+  if(n==="2"&&ph!=="1"&&ph!=="2"&&ph!=="live")ph="1";
+ }
+ function profitDays(){
+  var bal=num(startEl.value)||0,n=0,tot=0;
+  S.d.forEach(function(d){
+   var sum=0,any=false;
+   d.t.forEach(function(t){var v=num(t.pl);if(!isNaN(v)){sum+=v;any=true}});
+   if(any){tot++;if(sum>0&&sum>=bal*Number(dr)/100)n++}
+   bal+=sum;
+  });
+  return {n:n,tot:tot};
+ }
+ function saveSnap(k){S.snap=S.snap||{};S.snap[k]={s:startEl.value,dt:dtgt.value,mt:mtgt.value,l:S.l}}
+ function loadSnap(k){
+  var sn=S.snap&&S.snap[k];if(!sn)return false;
+  startEl.value=sn.s;dtgt.value=sn.dt;mtgt.value=sn.mt;
+  S.s=sn.s;S.dt=sn.dt;S.mt=sn.mt;
+  if(sn.l!==undefined){S.l=sn.l;document.getElementById("maxl").value=sn.l;if(typeof syncD==="function")syncD()}
+  if(window.updStartK)window.updStartK();
+  return true;
+ }
+ function switchAcct(n){
+  if(n===acct)return;
+  saveSnap(acct);
+  acct=n;
+  if(acct==="live"){loadSnap("live")}
+  else if(!loadSnap("prop")){startEl.value="10000";S.s="10000";if(window.updStartK)window.updStartK();autoTarget()}
+  save();markBtns();sync();store();render();
+ }
+ E.lci.addEventListener("change",function(){if(INST[E.lci.value]!=null)E.lcp.value=INST[E.lci.value];sync();store();render()});
+ ["lct","lcs","lcp","lcn"].forEach(function(k){E[k].addEventListener("input",function(){store();render()})});
+ ["start","maxl","maxd"].forEach(function(id){document.getElementById(id).addEventListener("input",function(){render()})});
+ mtgt.addEventListener("input",function(){
+  if(acct==="prop"&&ph!=="live"){
+   var T=num(mtgt.value),b=num(startEl.value);
+   if(T>0&&b>0){var pc=Math.round(T/b*100);opt=snapPct(pc);var d=dailyNow();dtgt.value=d;S.dt=String(d);save()}
+  }
+  markBtns();render();
+ });
+ document.querySelectorAll("#tpick button").forEach(function(x){x.addEventListener("click",function(){opt=x.getAttribute("data-p");document.getElementById("tpick").style.display="none";applyProp();store();markBtns();render()})});
+ mtgt.addEventListener("focus",openPick);mtgt.addEventListener("click",openPick);
+ function openPick(){if(acct==="prop"&&ph!=="live")document.getElementById("tpick").style.display="grid"}
+ document.querySelectorAll("#lcm button").forEach(function(x){x.addEventListener("click",function(){mode=x.getAttribute("data-m");markBtns();store();render()})});
+ document.querySelectorAll("#lca button").forEach(function(x){x.addEventListener("click",function(){switchAcct(x.getAttribute("data-a"))})});
+ document.querySelectorAll("#lcph button").forEach(function(x){x.addEventListener("click",function(){ph=x.getAttribute("data-ph");markBtns();sync();autoTarget();store();render()})});
+ document.querySelectorAll("#lcpt button").forEach(function(x){x.addEventListener("click",function(){setPT(x.getAttribute("data-pt"));markBtns();sync();autoTarget();store();render()})});
+ document.querySelectorAll("#dcs button").forEach(function(x){x.addEventListener("click",function(){dc=x.getAttribute("data-dc");markBtns();store();render()})});
+ document.querySelectorAll("#drs button").forEach(function(x){x.addEventListener("click",function(){dr=x.getAttribute("data-dr");markBtns();store();autoTarget();render()})});
+ window.lcLoad=function(){var L=S.lot||{};E.lct.value=L.t||3;E.lcs.value=L.s||20;E.lci.value=(L.i&&(INST[L.i]!=null||L.i==="custom"))?L.i:"eurusd";E.lcp.value=L.p||(INST[E.lci.value]!=null?INST[E.lci.value]:10);E.lcn.value=L.n||"";mode=MODES[L.m]?L.m:"medium";acct=L.a==="prop"?"prop":"live";opt=(L.o&&/^(6|7|8|9|10)$/.test(L.o))?L.o:"10";ph=(L.ph==="2"||L.ph==="live")?L.ph:"1";pt=/^(1|2|i)$/.test(L.pt)?L.pt:"2";if(pt==="1"&&ph==="2")ph="1";if(pt==="i")ph="live";dc=/^(7|5|4)$/.test(L.dc)?L.dc:"7";dr=(L.dr==="0.25"||L.dr==="0.5")?L.dr:"0.5";markBtns();sync();refreshPick();render()};
+})();
+(function(){
+ var st=document.getElementById("start"),sk=document.getElementById("startk");
+ function f(){var v=parseFloat(st.value);sk.textContent=(v>=1000)?"= "+parseFloat((v/1000).toFixed(2))+"k":"";}
+ window.updStartK=f;st.addEventListener("input",f);f();
+})();
+document.getElementById("help").addEventListener("click",function(){tour(0)});
+load();
+try{if(!localStorage.getItem("mh-tour-done"))tour(0)}catch(e){}
+</script>
+<script>
+(function(){
+ ["lca","lcpt","lcph","lcm","dcs"].forEach(function(id){
+  var g=document.getElementById(id); if(!g)return;
+  g.classList.add("grp","collapsed");
+  g.addEventListener("click",function(e){
+   var b=e.target.closest("button"); if(!b||!g.contains(b))return;
+   if(g.classList.contains("collapsed")){
+    if(b.classList.contains("on")){g.classList.remove("collapsed");e.stopPropagation();e.preventDefault()}
+    return;
+   }
+   setTimeout(function(){g.classList.add("collapsed")},0);
+  },true);
+ });
+})();
+</script>
+<script>
+(function(){
+ var MF=["January","February","March","April","May","June","July","August","September","October","November","December"];
+ var mmon=document.getElementById("mmon"),myr=document.getElementById("myr"),ymi=document.getElementById("ymonth"),mbig=document.getElementById("mbig");
+ if(!mmon||!myr||!ymi||!mbig)return;
+ MF.forEach(function(n,i){mmon.add(new Option(n,String(i+1).padStart(2,"0")))});
+ var y0=new Date().getFullYear();
+ for(var y=2026;y<=2050;y++)myr.add(new Option(String(y),String(y)));
+ function cur(){var v=(S.ym||"").split("-");var n=new Date();return {y:+v[0]||n.getFullYear(),m:+v[1]||(n.getMonth()+1)}}
+ function setYM(y,m){S.ym=y+"-"+String(m).padStart(2,"0");ymi.value=S.ym;padDays();save();load()}
+ window.syncM=function(){
+  var c=cur();
+  if(!myr.querySelector('option[value="'+c.y+'"]'))myr.add(new Option(String(c.y),String(c.y)));
+  mmon.value=String(c.m).padStart(2,"0");myr.value=String(c.y);
+  mbig.textContent=MF[c.m-1]+" "+c.y+"  ·  "+new Date(c.y,c.m,0).getDate()+" days";
+ };
+ mmon.addEventListener("change",function(){var c=cur();setYM(c.y,+mmon.value)});
+ myr.addEventListener("change",function(){var c=cur();setYM(+myr.value,c.m)});
+ document.getElementById("mprev").addEventListener("click",function(){var c=cur(),d=new Date(c.y,c.m-2,1);setYM(d.getFullYear(),d.getMonth()+1)});
+ document.getElementById("mnext").addEventListener("click",function(){var c=cur(),d=new Date(c.y,c.m,1);setYM(d.getFullYear(),d.getMonth()+1)});
+ document.getElementById("mtoday").addEventListener("click",function(){var n=new Date();setYM(n.getFullYear(),n.getMonth()+1)});
+ window.syncM();
+})();
+</script>
+<script>
+(function(){
+ var INS=[
+  {n:"XAUUSD (Gold)",b:[22,23]},{n:"US30",b:[22,23]},{n:"NAS100",b:[22,23]},
+  {n:"BTCUSD",b:null},{n:"EURUSD",b:null},{n:"GBPUSD",b:null},{n:"USDJPY",b:null},{n:"GBPJPY",b:null},
+  {n:"EURJPY",b:null},{n:"AUDUSD",b:null},{n:"NZDUSD",b:null},{n:"USDCAD",b:null},{n:"USDCHF",b:null}
+ ];
+ var ZN=[["Asia/Dhaka","বাংলাদেশ (Dhaka)"],["Asia/Kolkata","ভারত"],["Asia/Dubai","দুবাই"],["Asia/Riyadh","সৌদি আরব"],["Asia/Kuala_Lumpur","মালয়েশিয়া"],["Asia/Singapore","সিঙ্গাপুর"],["Europe/London","লন্ডন"],["America/New_York","নিউ ইয়র্ক"],["UTC","UTC"]];
+ var ins=document.getElementById("bkins"),zs=document.getElementById("bkz"),out=document.getElementById("bkout");
+ if(!ins||!zs||!out)return;
+ INS.forEach(function(x,i){ins.add(new Option(x.n,String(i)))});
+ ZN.forEach(function(z){zs.add(new Option(z[1],z[0]))});
+ ins.value="0";zs.value="Asia/Riyadh";
+ function utcDate(h){var d=new Date();return new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),h,0))}
+ function fmt(h,zone){return utcDate(h).toLocaleTimeString("en-US",{timeZone:zone,hour:"numeric",minute:"2-digit",hour12:true})}
+ function wkFmt(add,zone){var n=new Date(),diff=(5-n.getUTCDay()+7)%7,t=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+diff+add,22,0));return t.toLocaleString("en-US",{timeZone:zone,weekday:"short",hour:"numeric",minute:"2-digit",hour12:true})}
+ function zoneName(zone){var f=ZN.filter(function(z){return z[0]===zone})[0];return f?f[1]:zone}
+ function render(){
+  var x=INS[+ins.value],zone=zs.value,now=new Date(),uh=now.getUTCHours(),ud=now.getUTCDay(),html="";
+  if(x.b){
+   var closed=uh>=x.b[0]&&uh<x.b[1];
+   html+='<div><span class="bkstat '+(closed?"closed":"open")+'">'+(closed?"● Closed now (daily break)":"● Open now")+'</span></div>';
+   html+='<div class="bkline">Daily break: <b>'+fmt(x.b[0],zone)+' – '+fmt(x.b[1],zone)+'</b></div>';
+  }else{
+   var weekendClosed=(ud===6)||(ud===0&&uh<22)||(ud===5&&uh>=22);
+   html+='<div><span class="bkstat '+(weekendClosed?"closed":"open")+'">'+(weekendClosed?"● Closed (weekend)":"● Open now")+'</span></div>';
+   html+='<div class="bkline">No daily break</div>';
+  }
+  html+='<div class="sub">Local time in '+zoneName(zone)+' (updates with daylight saving)</div>';
+  if(!x.b)html+='<div class="bkline" style="font-size:13px;color:#cbd5e1">Weekend close: <b>'+wkFmt(0,zone)+'</b> → <b>'+wkFmt(2,zone)+'</b></div>';
+  out.innerHTML=html;
+ }
+ ins.addEventListener("change",render);
+ zs.addEventListener("change",function(){
+  var ms=document.getElementById("mstz");
+  if(ms&&ms.querySelector('option[value="'+zs.value+'"]')&&ms.value!==zs.value){ms.value=zs.value;ms.dispatchEvent(new Event("change"))}
+  render();
+ });
+ var msel2=document.getElementById("mstz");
+ if(msel2)msel2.addEventListener("change",function(){
+  if(zs.querySelector('option[value="'+msel2.value+'"]')){zs.value=msel2.value;render()}
+ });
+ render();
+ setInterval(render,60000);
+})();
+</script>
+<script>
+(function(){
+ function fit(t){t.style.setProperty("height","auto","important");t.style.setProperty("height",Math.max(34,t.scrollHeight+2)+"px","important")}
+ document.addEventListener("input",function(e){if(e.target.tagName==="TEXTAREA")fit(e.target)});
+ var mn=document.getElementById("mname");if(mn){mn.addEventListener("input",function(){fit(mn)});}
+ setTimeout(scan,300);
+ function addTog(t){
+  var prev=t.previousElementSibling;
+  if(prev&&prev.classList.contains("ftog"))return;
+  var b=document.createElement("button");
+  b.type="button";b.className="ftog";b.textContent="Hide";
+  b.addEventListener("click",function(){
+   var hide=t.style.display!=="none";
+   t.style.display=hide?"none":"";
+   b.textContent=hide?"Show":"Hide";
+   if(!hide)fit(t);
+  });
+  t.parentNode.insertBefore(b,t);
+ }
+ function scan(){document.querySelectorAll("textarea").forEach(function(t){addTog(t);fit(t)})}
+ var mo=new MutationObserver(function(){scan()});
+ var d=document.getElementById("days");if(d)mo.observe(d,{childList:true,subtree:true});
+})();
+</script>
+<script>
+(function(){
+ var Q=[
+  ["Discipline beats motivation. Follow your plan.","শৃঙ্খলা প্রেরণার চেয়ে শক্তিশালী। পরিকল্পনা মেনে চলুন।"],
+  ["Protect your capital first. Profits come second.","আগে মূলধন রক্ষা করুন, লাভ পরে আসবে।"],
+  ["One bad trade does not define your month. Stay calm.","একটি খারাপ ট্রেডে মাস নষ্ট হয় না। শান্ত থাকুন।"],
+  ["Small consistent wins build a big account.","ছোট ছোট ধারাবাহিক জয়ই বড় একাউন্ট গড়ে।"],
+  ["Plan the trade, then trade the plan.","আগে পরিকল্পনা, তারপর পরিকল্পনা অনুযায়ী ট্রেড।"],
+  ["Cut losses fast. Let winners run with rules.","লস দ্রুত কাটুন, নিয়ম মেনে লাভকে বাড়তে দিন।"],
+  ["Greed is the enemy of a good trader.","লোভ ভালো ট্রেডারের সবচেয়ে বড় শত্রু।"],
+  ["Stop trading when the daily target is hit.","দৈনিক টার্গেট পূরণ হলে ট্রেড বন্ধ করুন।"]
+ ];
+ var el=document.getElementById("advtext"),bn=document.querySelector("#advice .adv-bn");
+ if(!el||!bn)return;
+ var i=0;
+ setInterval(function(){
+  el.classList.add("fade");
+  setTimeout(function(){
+   i=(i+1)%Q.length;
+   el.textContent=Q[i][0];bn.textContent=Q[i][1];
+   el.classList.remove("fade");
+  },600);
+ },8000);
+})();
+</script>
+<button type="button" id="gtop" class="gtop" aria-label="Back to top" title="Back to top">↑</button>
+<script>
+(function(){
+ var b=document.getElementById("gtop");if(!b)return;
+ function upd(){b.classList.toggle("show",window.scrollY>220)}
+ window.addEventListener("scroll",upd,{passive:true});
+ b.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"})});
+ upd();
+})();
+</script>
+</body>
+</html>
