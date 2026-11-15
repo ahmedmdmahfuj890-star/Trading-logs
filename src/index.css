@@ -21,8 +21,8 @@ h2{font-size:18px;font-weight:800;letter-spacing:-.01em;margin:26px 0 10px;color
 .stat b{display:block;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}.stat span{font-size:12px;font-weight:600;color:var(--mut)}
 #stats .stat:first-child{grid-column:1/-1;background:var(--ink);color:#fff;border:0;border-top:3px solid var(--gold);padding:18px 18px 16px}
 #stats .stat:first-child span{color:#9fb2d4}#stats .stat:first-child b{font-size:36px;letter-spacing:-.03em}
-input,select{font:inherit;font-size:15px;color:var(--tx);background:var(--in);border:1px solid var(--bd);border-radius:12px;padding:10px;width:100%;min-width:0;min-height:44px}
-input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:transparent}
+input,select,textarea{font:inherit;font-size:15px;color:var(--tx);background:var(--in);border:1px solid var(--bd);border-radius:12px;padding:10px;width:100%;min-width:0;min-height:44px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:transparent}
 label{font-size:12px;font-weight:600;color:var(--mut);display:block;margin-bottom:5px}
 .row{display:grid;gap:8px;margin-bottom:10px}
 .trade{grid-template-columns:2fr 1.1fr 1fr}
@@ -71,7 +71,7 @@ h2::before{content:"";display:inline-block;width:8px;height:18px;border-radius:4
 #stats .stat:first-child span{color:#d6ecf8}
 #stats .stat:nth-child(odd){border-top:3px solid #00486d}#stats .stat:nth-child(even){border-top:3px solid #c0102b}
 .card[id^="card"]:not(.win):not(.loss):not(.flag){border-left-color:#00486d}
-input:focus,select:focus{outline-color:#00486d}
+input:focus,select:focus,textarea:focus{outline-color:#00486d}
 #newm,#dl2{background:linear-gradient(135deg,#00486d,#00608f);border:0;color:#fff}
 .dot.z{background:#00486d;border-color:#00486d}
 .emo{border-color:#c0102b}
